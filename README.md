@@ -1,4 +1,2 @@
 # pyblood
 datascientest project
-
-test
