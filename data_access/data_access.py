@@ -14,12 +14,11 @@ client = storage.Client(credentials=credentials)
 
 bucket_name = "pyblood_bucket"
 
-bucket = client.bucket(bucket_name)
-
 
 def get_image(img_path):
     """Return the image located at img_path on the a google cloud storage."""
 
+    bucket = client.bucket(bucket_name)
     img_as_bytes = bucket.blob(img_path).download_as_bytes()
 
     return Image.open(BytesIO(img_as_bytes))
