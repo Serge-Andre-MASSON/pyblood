@@ -18,19 +18,17 @@ def plot_cell_types():
     fig, axes = plt.subplots(2, 4)
 
     for cell_type, ax in zip(cell_types, axes.flatten()):
-        if cell_type not in ['basophil', 'eosinophil', 'erythroblast', 'ig', 'lymphocyte', 'monocyte']:
-            pass
-        else:
-            cell_type_df = PBC_infos_df[PBC_infos_df.cell_type ==
-                                        cell_type].reset_index()
-            n = len(cell_type_df)
-            id_ = randint(0, n-1)
 
-            img_path = cell_type_df.path[id_]
-            img = get_image(img_path)
-            ax.imshow(img)
-            ax.set_title(cell_type)
-            ax.axis('off')
+        cell_type_df = PBC_infos_df[PBC_infos_df.cell_type ==
+                                    cell_type].reset_index()
+        n = len(cell_type_df)
+        id_ = randint(0, n-1)
+
+        img_path = cell_type_df.path[id_]
+        img = get_image(img_path)
+        ax.imshow(img)
+        ax.set_title(cell_type)
+        ax.axis('off')
 
     return fig
 
