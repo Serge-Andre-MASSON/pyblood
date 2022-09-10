@@ -1,8 +1,18 @@
-# pyblood
+# Pyblood
 datascientest project
 
-To install dependencies, create a conda virtual env, activate it and run :
-$ conda install --yes --file requirements.txt
+# Usage
 
-Another possibility si to create a python venv and run
+### Create a conda env  and activate it:
+
+$ conda create -n <env_name>
+
+$ conda activate <env_name>
+
+### Install pytorch with conda following instructions at :
+
+https://pytorch.org/get-started/locally/
+
+### Use pip to install required libraries within <env_name>:
+
 $ pip install -r requirements.txt
