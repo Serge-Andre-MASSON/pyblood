@@ -1,6 +1,8 @@
 # Pyblood
 datascientest project
 
+app : https://serge-andre-masson-pyblood-pyblood-app-u9e5nn.streamlitapp.com/
+
 # Usage
 
 ### Create a conda env  and activate it:
