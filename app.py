@@ -2,7 +2,12 @@ from random import randint
 
 import streamlit as st
 import matplotlib.pyplot as plt
-from data_access import get_dataset_infos, get_image
+from data_access.data_access import get_dataset_infos, get_image
+    
+
+st.sidebar.markdown("# Pyblood")
+st.sidebar.write("""On donne ici un aperçu rapide des objectifs du projet et 
+du contenu du jeu de données sur lequel on va travailler.""")
 
 st.title('Pyblood')
 st.subheader('Objectif')

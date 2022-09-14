@@ -6,24 +6,33 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import storage
 
+import os
+from dotenv import load_dotenv
 
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
-client = storage.Client(credentials=credentials)
+load_dotenv()
+DATA_ACCESS = os.getenv("DATA_ACCESS")
 
-bucket_name = "pyblood_bucket"
+if DATA_ACCESS != 'local':
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"])
+    client = storage.Client(credentials=credentials)
+
+    BUCKET_NAME = "pyblood_bucket"
+    BUCKET = client.bucket(BUCKET_NAME)
+    DATA_ACCESS = 'google clood'
 
 
 def get_image(img_path):
-    """Return the image located at img_path on the a google cloud storage."""
+    """Return the image located at img_path."""
+    if DATA_ACCESS == 'local':
+        print(DATA_ACCESS)
+        return Image.open(img_path)
+    else:
+        print(DATA_ACCESS)
+        img_as_bytes = BytesIO(BUCKET.blob(img_path).download_as_bytes())
+        return Image.open(img_as_bytes)
 
-    bucket = client.bucket(bucket_name)
-    img_as_bytes = bucket.blob(img_path).download_as_bytes()
-
-    return Image.open(BytesIO(img_as_bytes))
-
-
+        
 def get_dataset_infos():
     """Return a DataFrame containing path , width, height and cell's type for each image."""
 
