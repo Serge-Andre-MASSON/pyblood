@@ -3,3 +3,5 @@ ipykernel==6.15.2
 streamlit==1.11.0
 matplotlib==3.5.2     
 scikit-image==0.19.3      
+tqdm==4.64.1
+python-dotenv==0.21.0
