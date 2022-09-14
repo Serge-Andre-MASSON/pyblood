@@ -2,8 +2,8 @@
 data
 
 # Secrets
-.streamlit/pyblood-44fc328ade00.json
-.streamlit/secrets.toml
+.streamlit/
+.streamlit/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
