@@ -32,10 +32,24 @@ def get_image(img_path):
         img_as_bytes = BytesIO(BUCKET.blob(img_path).download_as_bytes())
         return Image.open(img_as_bytes)
 
-        
+
 def get_dataset_infos():
     """Return a DataFrame containing path , width, height and cell's type for each image."""
 
     with open('data_access/PBC_infos.PICKLE', 'rb') as f:
         PBC_infos_df = pickle.load(f)
     return PBC_infos_df
+
+
+def load_pickle_data(name):
+    data_path = f'data/PBC_pickles/{name}.PICKLE'
+    with open(data_path, 'rb') as f:
+        data = pickle.load(f)
+    return data
+
+
+def load_pickle_selector(name):
+    data_path = f'data/feature_selection/{name}.PICKLE'
+    with open(data_path, 'rb') as f:
+        data = pickle.load(f)
+    return data
