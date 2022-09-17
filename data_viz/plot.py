@@ -1,7 +1,7 @@
 from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
-from data_access.data_access import get_dataset_infos, get_image, load_pickle_data, load_pickle_selector
+from data_access.data_access import get_dataset_infos, get_image, load_pickle
 
 
 PBC_infos_df = get_dataset_infos()
@@ -87,10 +87,11 @@ def multi_sized_images():
 
 def plot_select_percentile_mask(size):
 
-    paths = load_pickle_data("paths")
-    target = load_pickle_data("target")
+    paths = load_pickle("data/PBC_pickles/paths.PICKLE")
+    target = load_pickle("data/PBC_pickles/target.PICKLE")
 
-    selector = load_pickle_selector(f"select_percentile_{size}")
+    selector_path = f"data/feature_selection/select_percentile_{size}.PICKLE"
+    selector = load_pickle(selector_path)
     mask = selector['mask']
 
     index = randint(0, len(paths))

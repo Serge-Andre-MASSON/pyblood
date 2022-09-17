@@ -1,8 +1,5 @@
-from random import randint
-
 import streamlit as st
-import matplotlib.pyplot as plt
-from data_access.data_access import get_dataset_infos, get_image, DATA_ACCESS, load_pickle
+from data_access.data_access import load_pickle
 from data_viz.plot import all_cell_types, cell_types_distribution, reload_content
 
 
@@ -25,7 +22,6 @@ monocytes, lymphocytes, plaquettes (platelet), ig, basophiles, éosinophiles, gr
 st.subheader("Visualisation des données")
 st.write("""Les images à classer selon le type cellulaire se présentent ainsi : """)
 
-PBC_infos_df = get_dataset_infos()
 targets = load_pickle("data/PBC_pickles/target.PICKLE")
 
 placeholder = st.empty()
