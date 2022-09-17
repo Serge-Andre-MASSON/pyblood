@@ -1,6 +1,4 @@
-from random import randint
 import streamlit as st
-from data_access.data_access import get_dataset_infos, get_image, load_pickle_data
 from data_viz.plot import plot_select_percentile_mask, reload_content, plot_color_and_bg_img, multi_sized_images
 
 

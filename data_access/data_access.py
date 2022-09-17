@@ -9,6 +9,7 @@ from google.cloud import storage
 import os
 from dotenv import load_dotenv
 
+BUCKET = ''
 load_dotenv()
 DATA_ACCESS = os.getenv("DATA_ACCESS")
 
@@ -24,13 +25,14 @@ if DATA_ACCESS != 'local':
 
 def get_image(img_path):
     """Return the image located at img_path."""
-    if DATA_ACCESS == 'local':
-        print(DATA_ACCESS)
-        return Image.open(img_path)
-    else:
-        print(DATA_ACCESS)
-        img_as_bytes = BytesIO(BUCKET.blob(img_path).download_as_bytes())
-        return Image.open(img_as_bytes)
+
+    if DATA_ACCESS != 'local':
+        img_path = BytesIO(BUCKET.blob(img_path).download_as_bytes())
+
+    with Image.open(img_path) as f:
+        img = f.copy()
+
+    return img
 
 
 def get_dataset_infos():
@@ -41,15 +43,37 @@ def get_dataset_infos():
     return PBC_infos_df
 
 
+def load_pickle(path):
+    if DATA_ACCESS != 'local':
+        path = BytesIO(BUCKET.blob(path).download_as_bytes())
+        p = pickle.load(path)
+    else:
+        with open(path, 'rb') as f:
+            p = pickle.load(f)
+    return p
+
+
 def load_pickle_data(name):
     data_path = f'data/PBC_pickles/{name}.PICKLE'
-    with open(data_path, 'rb') as f:
-        data = pickle.load(f)
-    return data
+    if DATA_ACCESS == 'local':
+        with open(data_path, 'rb') as f:
+            data = pickle.load(f)
+        return data
+    else:
+        blob = BUCKET.blob(data_path)
+        data_pickle = BytesIO(blob.download_as_bytes())
+        data = pickle.load(data_pickle)
+        return data
 
 
 def load_pickle_selector(name):
     data_path = f'data/feature_selection/{name}.PICKLE'
-    with open(data_path, 'rb') as f:
-        data = pickle.load(f)
-    return data
+    if DATA_ACCESS == 'local':
+        with open(data_path, 'rb') as data:
+            selector = pickle.load(data)
+        return selector
+    else:
+        blob = BUCKET.blob(data_path)
+        selector_pickle = BytesIO(blob.download_as_bytes())
+        selector = pickle.load(selector_pickle)
+        return selector

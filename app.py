@@ -2,7 +2,7 @@ from random import randint
 
 import streamlit as st
 import matplotlib.pyplot as plt
-from data_access.data_access import get_dataset_infos, get_image
+from data_access.data_access import get_dataset_infos, get_image, DATA_ACCESS, load_pickle
 from data_viz.plot import all_cell_types, cell_types_distribution, reload_content
 
 
@@ -26,13 +26,14 @@ st.subheader("Visualisation des données")
 st.write("""Les images à classer selon le type cellulaire se présentent ainsi : """)
 
 PBC_infos_df = get_dataset_infos()
+targets = load_pickle("data/PBC_pickles/target.PICKLE")
 
 placeholder = st.empty()
-placeholder.pyplot(all_cell_types())
+placeholder.pyplot(all_cell_types(targets))
 
 
 st.button("Charger d'autres images",
-          on_click=reload_content, args=(placeholder.pyplot, all_cell_types))
+          on_click=reload_content, args=(placeholder.pyplot, all_cell_types, targets))
 
 st.write("""On note que dans la plupart des cas, l'information essentielle 
 se situe au centre de l'image. On proposera deux façons de tirer parti de ce constat : """)
@@ -44,8 +45,7 @@ st.subheader("Distribution des données")
 st.write("""La distribution des types cellulaires au sein du jeu de données se résume ainsi :""")
 
 
-target = PBC_infos_df.cell_type
-fig = cell_types_distribution(target)
+fig = cell_types_distribution(targets)
 st.pyplot(fig)
 
 st.write("""La distribution des données étant déséquilibrée, on utilisera des algorithmes de reéchantillonnage 

@@ -7,11 +7,11 @@ from data_access.data_access import get_dataset_infos, get_image, load_pickle_da
 PBC_infos_df = get_dataset_infos()
 
 
-def all_cell_types():
+def all_cell_types(targets):
     """Return a figure with 2X4 axes, each of them showing a particular
     cell type with a randomly choose representant"""
 
-    cell_types = PBC_infos_df.cell_type.unique()
+    cell_types = targets.unique()
     fig, axes = plt.subplots(2, 4)
 
     for cell_type, ax in zip(cell_types, axes.flatten()):
@@ -30,8 +30,8 @@ def all_cell_types():
     return fig
 
 
-def cell_types_distribution(target):
-    cell_types = target.value_counts(sort=False)
+def cell_types_distribution(targets):
+    cell_types = targets.value_counts(sort=False)
     fig, ax = plt.subplots()
     ax.bar(cell_types.index, height=cell_types.values)
     ax.tick_params(axis='x', labelrotation=45)
@@ -86,20 +86,20 @@ def multi_sized_images():
 
 
 def plot_select_percentile_mask(size):
-    img_size = f"data_{size}"
-    data = load_pickle_data(img_size)
+
+    paths = load_pickle_data("paths")
     target = load_pickle_data("target")
 
     selector = load_pickle_selector(f"select_percentile_{size}")
     mask = selector['mask']
 
-    index = randint(0, len(data))
+    index = randint(0, len(paths))
+    img = get_image(paths[index]).convert('L').resize((size, size))
     cell_type = target[index]
-    img = data[index].reshape(size, size)
 
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
 
-    ax1.imshow(img, cmap="gray_r")
+    ax1.imshow(img, cmap="gray")
     ax1.set_title(f"{cell_type} {size}x{size}")
     ax1.set_axis_off()
 
@@ -107,7 +107,7 @@ def plot_select_percentile_mask(size):
     ax2.set_title("Masque")
     ax2.set_axis_off()
 
-    ax3.imshow(np.where(mask, img, 0), cmap="gray_r")
+    ax3.imshow(np.where(mask, img, 0), cmap="gray")
     ax3.set_title(f"{cell_type} masqué(e)")
     ax3.set_axis_off()
 
