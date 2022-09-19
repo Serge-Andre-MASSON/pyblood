@@ -38,7 +38,7 @@ def get_image(img_path):
 def get_random_image():
     img_paths = load_pickle("data/PBC_pickles/paths.PICKLE")
     targets = load_pickle("data/PBC_pickles/target.PICKLE")
-    random_id = randint(0, len(img_paths))
+    random_id = randint(0, len(img_paths) - 1)
     img_path = img_paths[random_id]
     cell_type = targets[random_id]
     return get_image(img_path), cell_type
