@@ -35,7 +35,7 @@ def get_image(img_path):
     return img
 
 
-def get_random_imageg():
+def get_random_image():
     img_paths = load_pickle("data/PBC_pickles/paths.PICKLE")
     random_id = randint(0, len(img_paths))
     img_path = img_paths[random_id]
