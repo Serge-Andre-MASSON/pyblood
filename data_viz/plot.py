@@ -1,7 +1,12 @@
 from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
-from data_access.data_access import get_dataset_infos, get_image, load_pickle
+from data_access.data_access import (
+    get_dataset_infos,
+    get_image,
+    load_pickle,
+    get_random_image)
+from crop.crop import crop_pil, get_limits, crop_np
 
 
 PBC_infos_df = get_dataset_infos()
@@ -94,7 +99,7 @@ def plot_select_percentile_mask(size):
     selector = load_pickle(selector_path)
     mask = selector['mask']
 
-    index = randint(0, len(paths))
+    index = randint(0, len(paths) - 1)
     img = get_image(paths[index]).convert('L').resize((size, size))
     cell_type = target[index]
 
@@ -112,6 +117,37 @@ def plot_select_percentile_mask(size):
     ax3.set_title(f"{cell_type} masqué(e)")
     ax3.set_axis_off()
 
+    return fig
+
+
+def plot_gs_crop(size,):
+    original_img, cell_type = get_random_image()
+    img = original_img.resize((size, size)).convert('L')
+    img_array = np.array(img)
+
+    fig, ((ax_1, ax_2), (ax_3, ax_4)) = plt.subplots(2, 2)
+
+    ax_1.imshow(img)
+    ax_1.set_axis_off()
+    ax_1.set_title(cell_type)
+
+    i_up, i_down, to_i = get_limits(img_array, axis=1, size=size)
+    j_left, j_right, to_j = get_limits(img_array, axis=0, size=size)
+
+    std_i = img_array.std(axis=1)
+
+    ax_2.plot(std_i, range(size))
+    ax_2.hlines([i_up, i_down], 0, std_i.max(), colors='green')
+    ax_2.invert_yaxis()
+    ax_2.vlines(to_i, 0, size, colors='red', label='threshold')
+
+    std_j = img_array.std(axis=0)
+
+    ax_3.plot(std_j)
+    ax_3.vlines([j_left, j_right], 0, std_j.max(), colors='green')
+    ax_3.hlines(to_j, 0, size, colors='red', label='threshold')
+
+    ax_4.imshow(crop_np(img_array), cmap="gray")
     return fig
 
 
