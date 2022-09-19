@@ -1,4 +1,5 @@
 from io import BytesIO
+from random import randint
 from PIL import Image
 import pickle
 
@@ -32,6 +33,13 @@ def get_image(img_path):
         img = f.copy()
 
     return img
+
+
+def get_random_imageg():
+    img_paths = load_pickle("data/PBC_pickles/paths.PICKLE")
+    random_id = randint(0, len(img_paths))
+    img_path = img_paths[random_id]
+    return get_image(img_path)
 
 
 def get_dataset_infos():
