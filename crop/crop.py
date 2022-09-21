@@ -26,7 +26,7 @@ def get_corrected_limits(u, d, l, r, w, hp):
     pass
 
 
-def crop_pil(img: Image.Image, p: int = 20, output_color: str = "color"):
+def crop_pil(img: Image.Image, p: int = 10, output_color: str = "color"):
     """Automatically crop the image (as a PIL image) around the cell."""
     img_c = np.asarray(img)
 
@@ -59,7 +59,7 @@ def crop_pil(img: Image.Image, p: int = 20, output_color: str = "color"):
     return Image.fromarray(img_)
 
 
-def crop_np(img_: np.ndarray, p: int = 20):
+def crop_np(img_: np.ndarray, p: int = 10):
     """Automatically crop the image (as a numpy array) around the cell."""
     img = img_.copy()
     height, width = img.shape[:2]

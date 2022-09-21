@@ -127,7 +127,7 @@ def plot_gs_crop(size,):
 
     fig, ((ax_1, ax_2), (ax_3, ax_4)) = plt.subplots(2, 2)
 
-    ax_1.imshow(img)
+    ax_1.imshow(img, cmap='gray')
     ax_1.set_axis_off()
     ax_1.set_title(cell_type)
 
@@ -139,15 +139,16 @@ def plot_gs_crop(size,):
     ax_2.plot(std_i, range(size))
     ax_2.hlines([i_up, i_down], 0, std_i.max(), colors='green')
     ax_2.invert_yaxis()
-    ax_2.vlines(to_i, 0, size, colors='red', label='threshold')
+    ax_2.vlines(to_i, 0, size, colors='red')
 
     std_j = img_array.std(axis=0)
 
-    ax_3.plot(std_j)
+    ax_3.plot(std_j, label="Ecart type")
     ax_3.vlines([j_left, j_right], 0, std_j.max(), colors='green')
-    ax_3.hlines(to_j, 0, size, colors='red', label='threshold')
+    ax_3.hlines(to_j, 0, size, colors='red', label='Seuil')
 
     ax_4.imshow(crop_np(img_array), cmap="gray")
+    fig.legend()
     return fig
 
 
