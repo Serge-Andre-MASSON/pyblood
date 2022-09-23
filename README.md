@@ -5,15 +5,11 @@ app : https://serge-andre-masson-pyblood-app-zgh56j.streamlitapp.com/
 
 # Usage
 
-### Create a conda env  and activate it:
+### Create a conda env with python 3.9 and activate it:
 
-$ conda create -n <env_name>
+$ conda create -n <env_name> python=3.9
 
 $ conda activate <env_name>
-
-### Install pytorch with conda following instructions at :
-
-https://pytorch.org/get-started/locally/
 
 ### Use pip to install required libraries within <env_name>:
 
@@ -25,4 +21,14 @@ At the root of the project, create a dotenv file named .env and write in it the 
 
 DATA_ACCESS=local
 
-To use local data access, you need to have a directory named data in the root of the project, containing PBC_dataset_normal_DIB ( link: https://drive.google.com/file/d/1gKWvyIYfi0JXnLrLA3TM6W1WKiTRjmvM/view?usp=sharing) 
+To download the data* for the project on your local workstation :
+
+$ python
+
+from data_access.update_data import download_data
+
+download_data()
+
+
+*For this procedure to work you'll need to have acces to the .json containing the google cloud storage credentials.
+

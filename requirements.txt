@@ -1,5 +1,6 @@
 google-cloud-storage==1.43.0
 ipykernel==6.15.2
+tensorflow==2.10.0
 streamlit==1.11.0
 matplotlib==3.5.2 
 scikit-learn==1.1.2
