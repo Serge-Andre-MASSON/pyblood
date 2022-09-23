@@ -1,7 +1,11 @@
+from data_access.data_access import load_pickle
 import streamlit as st
 from data_viz.plot import (
+    plot_crop_pca,
     plot_gs_crop,
+    plot_pca,
     plot_select_percentile_mask,
+    plot_sp_pca,
     reload_content,
     plot_color_and_bg_img,
     multi_sized_images
@@ -101,16 +105,37 @@ def feature_selection():
 
 def dimension_reduction():
     st.markdown("## Réduction de dimension")
-    st.markdown("### PCA")
-    st.write("à compléter")
-    st.markdown("### LDA")
-    st.write("à compléter")
+    st.write("On a réduit la dimension de notre jeu de données en utilisant l'algorithme principal Component Analysis (PCA).")
+    st.markdown("### PCA sur données brutes")
+    st.write("Le résultat sur les données brutes est le suivant:")
+
+    size = st.selectbox("Taille des images :", [100, 70, 50, 30], index=3)
+
+    pca_fig = plot_pca(size)
+    pca_placeholder = st.empty()
+    pca_placeholder.pyplot(pca_fig)
+
+    st.markdown("### PCA après SelectPercentile")
+
+    sp_pca_fig = plot_sp_pca(size)
+    sp_pca_placeholder = st.empty()
+    sp_pca_placeholder.pyplot(sp_pca_fig)
+    st.write(":")
+
+    st.markdown("### PCA après Rognage automatique")
+
+    st.write("A implémenter")
+    # TODO: réparer les pickles
+
+    # crop_pca_fig = plot_crop_pca(size)
+    # crop_pca_placeholder = st.empty()
+    # crop_pca_placeholder.pyplot(crop_pca_fig)
+    # st.write(":")
 
 
 ###########################################################################################
 # Ce bloc de code permet de passer d'une section à une autre via la dropbox de la sidebar #
 ###########################################################################################
-
 page_names_to_funcs = {
     "Rééchantillonage du jeux de données": resampling,
     "Réduction de la taille des images": image_reduction,
