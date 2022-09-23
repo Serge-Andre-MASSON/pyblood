@@ -1,3 +1,4 @@
+from sklearn.base import TransformerMixin
 from skimage.filters import threshold_otsu
 import numpy as np
 from PIL import Image
@@ -82,3 +83,20 @@ def crop_np(img_: np.ndarray, p: int = 10):
         if j < left or j > right:
             img[:, j] = 0
     return img
+
+
+class Crop(TransformerMixin):
+    img_size = None
+
+    def fit(self, X: np.ndarray, y: np.ndarray = None):
+        self.img_size = np.sqrt(X.shape[-1]).astype('int')
+        return self
+
+    def crop(self, x):
+        x_ = x.reshape((self.img_size, self.img_size))
+        x_ = crop_np(x_, p=10)
+        x_ = x_.reshape((self.img_size*self.img_size,))
+        return x_
+
+    def transform(self, X: np.ndarray):
+        return np.apply_along_axis(self.crop, axis=1, arr=X)

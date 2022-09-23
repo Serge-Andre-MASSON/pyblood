@@ -111,6 +111,7 @@ def dimension_reduction():
 
     size = st.selectbox("Taille des images :", [100, 70, 50, 30], index=3)
 
+    # TODO: Alléger les pickles. Voir plot.py pour utiliser cet allègement.
     pca_fig = plot_pca(size)
     pca_placeholder = st.empty()
     pca_placeholder.pyplot(pca_fig)
@@ -120,17 +121,12 @@ def dimension_reduction():
     sp_pca_fig = plot_sp_pca(size)
     sp_pca_placeholder = st.empty()
     sp_pca_placeholder.pyplot(sp_pca_fig)
-    st.write(":")
 
     st.markdown("### PCA après Rognage automatique")
 
-    st.write("A implémenter")
-    # TODO: réparer les pickles
-
-    # crop_pca_fig = plot_crop_pca(size)
-    # crop_pca_placeholder = st.empty()
-    # crop_pca_placeholder.pyplot(crop_pca_fig)
-    # st.write(":")
+    crop_pca_fig = plot_crop_pca(size)
+    crop_pca_placeholder = st.empty()
+    crop_pca_placeholder.pyplot(crop_pca_fig)
 
 
 ###########################################################################################
