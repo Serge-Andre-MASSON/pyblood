@@ -1,11 +1,9 @@
 from data_access.data_access import load_pickle
 import streamlit as st
 from data_viz.plot import (
-    plot_crop_pca,
     plot_gs_crop,
     plot_pca,
     plot_select_percentile_mask,
-    plot_sp_pca,
     reload_content,
     plot_color_and_bg_img,
     multi_sized_images
@@ -106,27 +104,31 @@ def feature_selection():
 def dimension_reduction():
     st.markdown("## Réduction de dimension")
     st.write("On a réduit la dimension de notre jeu de données en utilisant l'algorithme principal Component Analysis (PCA).")
+    # TODO : ajouter crop_pca_100 et pca_100
+    size = st.selectbox("Taille des images :", [70, 50, 30], index=2)
     st.markdown("### PCA sur données brutes")
     st.write("Le résultat sur les données brutes est le suivant:")
+    st.write(size)
 
-    size = st.selectbox("Taille des images :", [100, 70, 50, 30], index=3)
-
-    # TODO: Alléger les pickles. Voir plot.py pour utiliser cet allègement.
-    pca_fig = plot_pca(size)
+    pca_fig, ratio = plot_pca(size)
     pca_placeholder = st.empty()
     pca_placeholder.pyplot(pca_fig)
 
+    st.write(f"Pourcentage du jeu de données restant : {ratio}")
+
     st.markdown("### PCA après SelectPercentile")
 
-    sp_pca_fig = plot_sp_pca(size)
+    sp_pca_fig, ratio = plot_pca(size, selector='sp')
     sp_pca_placeholder = st.empty()
     sp_pca_placeholder.pyplot(sp_pca_fig)
+    st.write(f"Pourcentage du jeu de données restant : {ratio}")
 
     st.markdown("### PCA après Rognage automatique")
 
-    crop_pca_fig = plot_crop_pca(size)
+    crop_pca_fig, ratio = plot_pca(size, selector='crop')
     crop_pca_placeholder = st.empty()
     crop_pca_placeholder.pyplot(crop_pca_fig)
+    st.write(f"Pourcentage du jeu de données restant : {ratio}")
 
 
 ###########################################################################################

@@ -8,7 +8,7 @@ from data_access.data_access import (
     get_image,
     load_pickle,
     get_random_image)
-from crop.crop import crop_pil, get_limits, crop_np
+from crop.crop import get_limits, crop_np, Crop
 
 
 PBC_infos_df = get_dataset_infos()
@@ -94,17 +94,12 @@ def multi_sized_images():
 
 def plot_select_percentile_mask(size):
 
-    paths = load_pickle("data/PBC_pickles/paths.PICKLE")
-    target = load_pickle("data/PBC_pickles/target.PICKLE")
-
-    selector_path = f"data/feature_selection/select_percentile_{size}.PICKLE"
+    selector_path = f"data/pipelines/sp_{size}.PICKLE"
     selector = load_pickle(selector_path)
     mask = selector['mask']
 
-    index = randint(0, len(paths) - 1)
-    img = get_image(paths[index]).convert('L').resize((size, size))
-    cell_type = target[index]
-
+    img, cell_type = get_random_image()
+    img = img.convert('L').resize((size, size))
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
 
     ax1.imshow(img, cmap="gray")
@@ -154,74 +149,27 @@ def plot_gs_crop(size,):
     return fig
 
 
-def plot_pca(size):
-    data = load_pickle(f"data/PBC_pickles/data_{size}.PICKLE")
-    targets = load_pickle(f"data/PBC_pickles/target.PICKLE")
-    pca_summary = load_pickle(f"data/pca/pca_{size}.PICKLE")
+def plot_pca(size, selector=None):
+    if selector:
+        path = f"data/pipelines/{selector}_pca_{size}.PICKLE"
+    else:
+        path = f"data/pipelines/pca_{size}.PICKLE"
 
-    pca = pca_summary['pca']
-    X = pca.transform(data)
-    fig, ax = plt.subplots()
-    for target in targets.unique():
-        X_ = X[targets == target]
-        # TODO: Add X_[:, 0], X_[:, 1] to the pickled pca to avoid inline computation
-        ax.scatter(X_[:, 0], X_[:, 1], label=target)
-    ax.set_title("Répartition des données selon les deux premières dimensions")
-    ax.legend()
-    return fig
+    pca = load_pickle(path)
+    targets = pca['targets']
 
-
-def plot_sp_pca(size):
-    data = load_pickle(f"data/PBC_pickles/data_{size}.PICKLE")
-    targets = load_pickle(f"data/PBC_pickles/target.PICKLE")
-    sp_pca_summary = load_pickle(f"data/pca/sp_pca_{size}.PICKLE")
-
-    sp_pca = sp_pca_summary['pca']
-    X = sp_pca.transform(data)
+    X_0 = pca['first_dimension']
+    X_1 = pca['second_dimension']
 
     fig, ax = plt.subplots()
     for target in targets.unique():
-        X_ = X[targets == target]
-        # TODO: Add X_[:, 0], X_[:, 1] to the pickled pca to avoid inline computation
-        ax.scatter(X_[:, 0], X_[:, 1], label=target)
+        X_0_ = X_0[targets == target]
+        X_1_ = X_1[targets == target]
+        ax.scatter(X_0_, X_1_, label=target)
     ax.set_title("Répartition des données selon les deux premières dimensions")
     ax.legend()
-    return fig
-
-
-class Crop(TransformerMixin):
-    img_size = None
-
-    def fit(self, X: np.ndarray, y: np.ndarray = None):
-        self.img_size = np.sqrt(X.shape[-1]).astype('int')
-        return self
-
-    def crop(self, x):
-        x_ = x.reshape((self.img_size, self.img_size))
-        x_ = crop_np(x_, p=10)
-        x_ = x_.reshape((self.img_size*self.img_size,))
-        return x_
-
-    def transform(self, X: np.ndarray):
-        return np.apply_along_axis(self.crop, axis=1, arr=X)
-
-
-def plot_crop_pca(size):
-    data = load_pickle(f"data/PBC_pickles/data_{size}.PICKLE")
-    targets = load_pickle(f"data/PBC_pickles/target.PICKLE")
-    sp_pca_summary = load_pickle(f"data/pca/crop_pca_{size}.PICKLE")
-
-    sp_pca = sp_pca_summary['pipeline']
-    X = sp_pca.transform(data)
-
-    fig, ax = plt.subplots()
-    for target in targets.unique():
-        X_ = X[targets == target]
-        # TODO: Add X_[:, 0], X_[:, 1] to the pickled pca to avoid inline computation
-        ax.scatter(X_[:, 0], X_[:, 1], label=target)
-    ax.set_title("Répartition des données selon les deux premières dimensions")
-    ax.legend()
-    return fig
+    ratio = pca['feature_size_after'] / pca["feature_size_before"]
+    return fig, ratio
 
 
 def reload_content(placeholder_func, func, *args):
