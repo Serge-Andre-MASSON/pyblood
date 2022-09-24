@@ -108,7 +108,6 @@ def dimension_reduction():
     size = st.selectbox("Taille des images :", [70, 50, 30], index=2)
     st.markdown("### PCA sur données brutes")
     st.write("Le résultat sur les données brutes est le suivant:")
-    st.write(size)
 
     pca_fig, ratio = plot_pca(size)
     pca_placeholder = st.empty()
