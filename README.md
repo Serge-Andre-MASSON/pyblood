@@ -27,7 +27,7 @@ $ ipython
 
 from data_access.data_update import download_data
 
-download_data()
+download_data()# A réparer
 
 
 *For this procedure to work you'll need to have acces to the .json containing the google cloud storage credentials.
