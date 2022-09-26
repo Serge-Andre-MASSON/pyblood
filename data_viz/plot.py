@@ -1,5 +1,3 @@
-from crop.crop import crop_np
-from sklearn.base import TransformerMixin
 from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,10 +6,12 @@ from data_access.data_access import (
     get_image,
     load_pickle,
     get_random_image)
-from crop.crop import get_limits, crop_np, Crop
+from crop.crop import get_limits, crop_np
+from data_access.data_paths import get_pbc_dataset_infos_paths, get_transformer_path
 
 
-PBC_infos_df = get_dataset_infos()
+pbc_dataset_infos_path = get_pbc_dataset_infos_paths('both')
+PBC_infos_df = load_pickle(pbc_dataset_infos_path)
 
 
 def all_cell_types(targets):
@@ -23,7 +23,7 @@ def all_cell_types(targets):
 
     for cell_type, ax in zip(cell_types, axes.flatten()):
 
-        cell_type_df = PBC_infos_df[PBC_infos_df.cell_type ==
+        cell_type_df = PBC_infos_df[PBC_infos_df.target ==
                                     cell_type].reset_index()
         n = len(cell_type_df)
         id_ = randint(0, n-1)
@@ -49,7 +49,7 @@ def cell_types_distribution(targets):
 def plot_color_and_bg_img():
 
     random_id = randint(0, len(PBC_infos_df))
-    img_path, cell_type = PBC_infos_df[["path", "cell_type"]].iloc[random_id]
+    img_path, cell_type = PBC_infos_df.iloc[random_id]
 
     img = get_image(img_path)
     img_bg = img.convert('L')
@@ -66,7 +66,7 @@ def plot_color_and_bg_img():
 
 def multi_sized_images():
     random_id = randint(0, len(PBC_infos_df))
-    img_path, cell_type = PBC_infos_df[["path", "cell_type"]].iloc[random_id]
+    img_path, cell_type = PBC_infos_df.iloc[random_id]
 
     img = get_image(img_path)
     img_bg = img.convert('L')
@@ -94,7 +94,7 @@ def multi_sized_images():
 
 def plot_select_percentile_mask(size):
 
-    selector_path = f"data/pipelines/sp_{size}.PICKLE"
+    selector_path = get_transformer_path(size, 'sp')
     selector = load_pickle(selector_path)
     mask = selector['mask']
 
@@ -151,9 +151,9 @@ def plot_gs_crop(size,):
 
 def plot_pca(size, selector=None):
     if selector:
-        path = f"data/pipelines/{selector}_pca_{size}.PICKLE"
+        path = get_transformer_path(size, selector, 'pca')
     else:
-        path = f"data/pipelines/pca_{size}.PICKLE"
+        path = get_transformer_path(size, 'pca')
 
     pca = load_pickle(path)
     targets = pca['targets']

@@ -1,5 +1,6 @@
 import streamlit as st
 from data_access.data_access import load_pickle
+from data_access.data_paths import get_pbc_dataset_infos_paths
 from data_viz.plot import all_cell_types, cell_types_distribution, reload_content
 
 
@@ -22,9 +23,11 @@ monocytes, lymphocytes, plaquettes (platelet), ig, basophiles, éosinophiles, gr
 st.subheader("Visualisation des données")
 st.write("""Les images à classer selon le type cellulaire se présentent ainsi : """)
 
-targets = load_pickle("data/PBC_pickles/target.PICKLE")
+targets_path = get_pbc_dataset_infos_paths('targets')
+targets = load_pickle(targets_path)
 
 placeholder = st.empty()
+# TODO : Re factor all_cell_types. app.py may not ask for data access.
 placeholder.pyplot(all_cell_types(targets))
 
 

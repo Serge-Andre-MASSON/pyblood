@@ -30,7 +30,7 @@ ROOT_URL = "https://storage.googleapis.com/pyblood_bucket/"
 
 
 def upload_data():
-    for root, dirnames, files in os.walk("data/"):
+    for root, _, files in os.walk("data/"):
         if files and "PBC_dataset_normal_DIB" not in root:
             for file in files:
                 file_path = root + "/" + file

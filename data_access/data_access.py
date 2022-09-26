@@ -10,9 +10,12 @@ from google.cloud import storage
 import os
 from dotenv import load_dotenv
 
+from data_access.data_paths import get_pbc_dataset_infos_paths
+
 BUCKET = ''
 load_dotenv()
 DATA_ACCESS = os.getenv("DATA_ACCESS")
+
 
 if DATA_ACCESS != 'local':
     credentials = service_account.Credentials.from_service_account_info(
@@ -36,11 +39,11 @@ def get_image(img_path):
 
 
 def get_random_image():
-    img_paths = load_pickle("data/PBC_pickles/paths.PICKLE")
-    targets = load_pickle("data/PBC_pickles/target.PICKLE")
-    random_id = randint(0, len(img_paths) - 1)
-    img_path = img_paths[random_id]
-    cell_type = targets[random_id]
+    dataset_infos_path = get_pbc_dataset_infos_paths('both')
+    dataset_infos = load_pickle(dataset_infos_path)
+
+    random_id = randint(0, len(dataset_infos) - 1)
+    img_path, cell_type = dataset_infos.iloc[random_id]
     return get_image(img_path), cell_type
 
 
