@@ -1,3 +1,4 @@
+from pathlib import Path
 import math
 from tqdm import tqdm
 import os
@@ -43,6 +44,12 @@ def upload_data():
 def download_data():
     blobs = client.list_blobs(BUCKET)
     for blob in blobs:
-        blob_name = blob.public_url.replace(ROOT_URL, "")
+        blob_name = blob.name
+
         if not os.path.exists(blob_name):
-            BUCKET.blob(blob_name).download_to_filename(blob_name)
+            try:
+                BUCKET.blob(blob_name).download_to_filename(blob_name)
+            except IsADirectoryError:
+                os.mkdir(blob_name)
+                print(
+                    f"This blob ({blob}) is a directory, go to the next one...")
