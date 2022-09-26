@@ -23,9 +23,9 @@ DATA_ACCESS=local
 
 To download the data* for the project on your local workstation :
 
-$ python
+$ ipython
 
-from data_access.update_data import download_data
+from data_access.data_update import download_data
 
 download_data()
 
