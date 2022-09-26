@@ -45,11 +45,21 @@ def download_data():
     blobs = client.list_blobs(BUCKET)
     for blob in blobs:
         blob_name = blob.name
-
         if not os.path.exists(blob_name):
+            if blob_name[-1] == '/':
+                os.mkdir(blob_name)
+            else:
+                try:
+                    os.mkdir(Path(*blob_name.split('/')[:-1]))
+                except FileExistsError:
+                    pass
+        
             try:
                 BUCKET.blob(blob_name).download_to_filename(blob_name)
             except IsADirectoryError:
-                os.mkdir(blob_name)
                 print(
                     f"This blob ({blob}) is a directory, go to the next one...")
+
+
+if __name__ == "__main__":
+    download_data()
