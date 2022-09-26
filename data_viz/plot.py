@@ -47,7 +47,7 @@ def cell_types_distribution(targets):
 
 def plot_color_and_bg_img():
 
-    random_id = randint(0, len(PBC_infos_df))
+    random_id = randint(0, len(PBC_infos_df) - 1)
     img_path, cell_type = PBC_infos_df.iloc[random_id]
 
     img = get_image(img_path)
