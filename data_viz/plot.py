@@ -2,7 +2,6 @@ from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
 from data_access.data_access import (
-    get_dataset_infos,
     get_image,
     load_pickle,
     get_random_image)

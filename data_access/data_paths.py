@@ -1,24 +1,39 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+load_dotenv()
+DATA_ACCESS = os.getenv("DATA_ACCESS")
 
 
 TRANSFORMER_ROOT = Path("data/transformers")
 PBC_PICKLES_ROOT = Path("data/PBC_pickles")
 
 
+def get_correct_path(path):
+    if DATA_ACCESS != 'local':
+        return str(path)
+    else:
+        return path
+
+
 def get_transformer_path(size, *args):
     transformers = '_'.join(args)
-    return TRANSFORMER_ROOT/f"{transformers}_{size}.PICKLE"
+    path = TRANSFORMER_ROOT/f"{transformers}_{size}.PICKLE"
+    return get_correct_path(path)
 
 
 def get_pbc_dataset_infos_paths(name: str):
     """Return the path to dataset infos. 
     name can be 'paths' for images's paths, 'targets for targets's paths or 'both'."""
     if name == 'paths':
-        return PBC_PICKLES_ROOT / "paths.PICKLE"
+        path = PBC_PICKLES_ROOT / "paths.PICKLE"
     elif name == 'targets':
-        return PBC_PICKLES_ROOT / "targets.PICKLE"
+        path = PBC_PICKLES_ROOT / "targets.PICKLE"
     elif name == 'both':
-        return PBC_PICKLES_ROOT / "dataset_infos.PICKLE"
+        path = PBC_PICKLES_ROOT / "dataset_infos.PICKLE"
+    return get_correct_path(path)
 
 
 if __name__ == "__main__":

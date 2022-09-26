@@ -47,18 +47,13 @@ def get_random_image():
     return get_image(img_path), cell_type
 
 
-def get_dataset_infos():
-    """Return a DataFrame containing path , width, height and cell's type for each image."""
-
-    with open('data_access/PBC_infos.PICKLE', 'rb') as f:
-        PBC_infos_df = pickle.load(f)
-    return PBC_infos_df
-
-
 def load_pickle(path):
     """Return unpickled data located at path."""
     if DATA_ACCESS != 'local':
-        path = BytesIO(BUCKET.blob(path).download_as_bytes())
+        print(path)
+        path = BytesIO(
+            BUCKET.blob(path)
+                  .download_as_bytes())
         p = pickle.load(path)
     else:
         with open(path, 'rb') as f:
