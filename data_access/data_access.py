@@ -1,8 +1,10 @@
+import tensorflow as tf
 from io import BytesIO
 from random import randint
 from PIL import Image
 import pickle
 
+import h5py
 import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import storage
@@ -61,3 +63,16 @@ def load_pickle(path):
         with open(path, 'rb') as f:
             p = pickle.load(f)
     return p
+
+# TODO: Make this work
+
+
+@st.cache(allow_output_mutation=True)
+def load_model(path):
+    """Load the model located at the specified path."""
+    if DATA_ACCESS != 'local':
+        path = BytesIO(BUCKET.blob(path).download_as_bytes())
+        path = h5py.File(path)
+
+    model = tf.keras.models.load_model(path)
+    return model

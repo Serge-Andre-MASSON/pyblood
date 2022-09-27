@@ -1,6 +1,4 @@
-import os
 from pathlib import Path
-from dotenv import load_dotenv
 
 
 """This module is supposed to build all the paths that the application needs. 
@@ -9,13 +7,9 @@ The purpose is to avoid to use hard coded paths.
 Practicaly, you may use hard coded path at first and then, create a function that build them here if possible/necessary."""
 
 
-load_dotenv()  # Load the .env file content
-# Access the environnement variable DATA_ACCESS.
-DATA_ACCESS = os.getenv("DATA_ACCESS")
-
-
 TRANSFORMER_ROOT = Path("data/transformers")
 PBC_PICKLES_ROOT = Path("data/PBC_pickles")
+DL_MODELS_ROOT = Path("data/dl_models")
 
 
 def get_transformer_path(size, *args):
@@ -44,4 +38,9 @@ def get_pbc_dataset_infos_paths(name: str):
         path = PBC_PICKLES_ROOT / "targets.PICKLE"
     elif name == 'both':
         path = PBC_PICKLES_ROOT / "dataset_infos.PICKLE"
+    return str(path)
+
+
+def get_dl_model_path(model_name):
+    path = DL_MODELS_ROOT / f"{model_name}.h5"
     return str(path)
