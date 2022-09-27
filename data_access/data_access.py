@@ -28,7 +28,8 @@ if DATA_ACCESS != 'local':
 
 
 def get_image(img_path):
-    """Return the image located at img_path."""
+    """Return the image located at img_path. This function is a priori not suppose 
+    to be used directly and is a utility for the other functions below."""
     if DATA_ACCESS != 'local':
         img_path = BytesIO(BUCKET.blob(img_path).download_as_bytes())
 
@@ -39,6 +40,7 @@ def get_image(img_path):
 
 
 def get_random_image():
+    """Return a random image picked from the original dataset, together with is cell's type."""
     dataset_infos_path = get_pbc_dataset_infos_paths('both')
     dataset_infos = load_pickle(dataset_infos_path)
 
@@ -50,10 +52,10 @@ def get_random_image():
 def load_pickle(path):
     """Return unpickled data located at path."""
     if DATA_ACCESS != 'local':
-        print(path)
         path = BytesIO(
             BUCKET.blob(path)
                   .download_as_bytes())
+
         p = pickle.load(path)
     else:
         with open(path, 'rb') as f:

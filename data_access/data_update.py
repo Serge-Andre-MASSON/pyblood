@@ -16,12 +16,14 @@ DATA_ACCESS = 'google clood'
 
 
 def upload_files(*file_paths):
+    """Upload all files passed in argument. Local path will match remote path. """
     for file_path in tqdm(file_paths):
         blob = BUCKET.blob(file_path)
         blob.upload_from_filename(file_path)
 
 
 def download_files(*file_paths):
+    """Download all files passed in argument. Remote path will match local path."""
     for file_path in tqdm(file_paths):
         blob = BUCKET.blob(file_path)
         blob.download_to_filename(file_path)
@@ -31,6 +33,7 @@ ROOT_URL = "https://storage.googleapis.com/pyblood_bucket/"
 
 
 def upload_data():
+    """Browse local data and upload in the cloud the missing elements."""
     for root, _, files in os.walk("data/"):
         if files and "PBC_dataset_normal_DIB" not in root:
             for file in files:
@@ -42,6 +45,7 @@ def upload_data():
 
 
 def download_data():
+    """Browse remote data and download locally the missing elements."""
     blobs = client.list_blobs(BUCKET)
     for blob in blobs:
         blob_name = blob.name
@@ -53,7 +57,7 @@ def download_data():
                     os.mkdir(Path(*blob_name.split('/')[:-1]))
                 except FileExistsError:
                     pass
-        
+
             try:
                 BUCKET.blob(blob_name).download_to_filename(blob_name)
             except IsADirectoryError:
