@@ -16,7 +16,7 @@ DATA_ACCESS = 'google clood'
 
 
 def upload_files(*file_paths):
-    """Upload all files passed in argument. Local path will match remote path. """
+    """Upload all files passed in argument. Local path will match remote path."""
     for file_path in tqdm(file_paths):
         blob = BUCKET.blob(file_path)
         blob.upload_from_filename(file_path)
@@ -27,9 +27,6 @@ def download_files(*file_paths):
     for file_path in tqdm(file_paths):
         blob = BUCKET.blob(file_path)
         blob.download_to_filename(file_path)
-
-
-ROOT_URL = "https://storage.googleapis.com/pyblood_bucket/"
 
 
 def upload_data():

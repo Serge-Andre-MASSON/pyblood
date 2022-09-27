@@ -31,6 +31,7 @@ def get_transformer_path(size, *args):
     transformers = '_'.join(args)
     path = TRANSFORMER_ROOT/f"{transformers}_{size}.PICKLE"
     # str is there for the remote data access. It seems that gcs blob can't be specified as Path object...
+    # There might be a way but I don't know it yet and this is the trick for now.
     return str(path)
 
 
@@ -44,7 +45,3 @@ def get_pbc_dataset_infos_paths(name: str):
     elif name == 'both':
         path = PBC_PICKLES_ROOT / "dataset_infos.PICKLE"
     return str(path)
-
-
-if __name__ == "__main__":
-    pass
