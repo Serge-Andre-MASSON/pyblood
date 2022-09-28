@@ -67,7 +67,7 @@ def load_pickle(path):
 
 
 @st.cache(allow_output_mutation=True)
-def load_model(path):
+def load_dl_model(path):
     """Load the model located at the specified path."""
     if DATA_ACCESS != 'local':
         path = BytesIO(BUCKET.blob(path).download_as_bytes())

@@ -1,4 +1,4 @@
-from data_access.data_access import get_random_image, load_model
+from data_access.data_access import get_random_image, load_dl_model
 from data_access.data_paths import get_dl_model_path
 import tensorflow as tf
 import streamlit as st
@@ -15,7 +15,7 @@ def plot_predictions(counter):
     img = img.resize((256, 256))
     tensor_img = tf.keras.utils.img_to_array(img).reshape(-1, 256, 256, 3)
     model_path = get_dl_model_path('dense_net')
-    model = load_model(model_path)
+    model = load_dl_model(model_path)
     prediction = model.predict(tensor_img)[0]
 
     fig_1, ax = plt.subplots()

@@ -1,5 +1,5 @@
 import streamlit as st
-from data_viz.ml_plot import plot_predictions
+from data_viz.dl_plot import plot_predictions
 
 
 def init_session_state(*states):
