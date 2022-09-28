@@ -9,12 +9,12 @@ DATA_ACCESS = os.getenv("DATA_ACCESS")
 
 TRANSFORMER_ROOT = Path("data/transformers")
 PBC_PICKLES_ROOT = Path("data/PBC_pickles")
-IMAGES_ROOT = Path("data/images")
+FIGURES_ROOT = Path("data/figures")
 ML_MODELS_ROOT = Path("data/ml_models")
 
 def get_image_path(name: str):
     if name == 'performance vs size':
-        path = IMAGES_ROOT / "performance_vs_size.png"
+        path = FIGURES_ROOT / "performance_vs_size.png"
     return get_correct_path(path)
 
 def get_ml_model_path(name: str):
