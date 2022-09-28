@@ -12,10 +12,9 @@ PBC_PICKLES_ROOT = Path("data/PBC_pickles")
 FIGURES_ROOT = Path("data/figures")
 ML_MODELS_ROOT = Path("data/ml_models")
 
-def get_image_path(name: str):
-    if name == 'performance vs size':
-        path = FIGURES_ROOT / "performance_vs_size.png"
-    return get_correct_path(path)
+def get_figure_path(figure_name):
+    path = FIGURES_ROOT / f"{figure_name}.jpg"
+    return str(path)
 
 def get_ml_model_path(name: str):
     if name == 'svc_30':

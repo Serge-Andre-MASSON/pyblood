@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from data_access.data_paths import get_image_path, get_ml_model_path
+from data_access.data_paths import get_figure_path, get_ml_model_path
 from data_access.data_access import get_random_image
 from joblib import load
 import matplotlib.pyplot as plt
@@ -25,7 +25,7 @@ def section_1():
              """)
 
 
-    image_path = get_image_path("performance vs size")
+    image_path = get_figure_path("performance_vs_size")
     image = Image.open(image_path)
 
     st.image(image)
