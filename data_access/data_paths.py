@@ -10,6 +10,12 @@ Practicaly, you may use hard coded path at first and then, create a function tha
 TRANSFORMER_ROOT = Path("data/transformers")
 PBC_PICKLES_ROOT = Path("data/PBC_pickles")
 DL_MODELS_ROOT = Path("data/dl_models")
+FIGURES_ROOT = Path("data/figures")
+
+
+def get_figure_path(figure_name):
+    path = FIGURES_ROOT / f"{figure_name}.jpg"
+    return str(path)
 
 
 def get_transformer_path(size, *args):
