@@ -8,3 +8,5 @@ imbalanced-learn==0.9.1
 scikit-image==0.19.3      
 tqdm==4.64.1
 python-dotenv==0.21.0
+h5py==3.7.0
+PyYAML==6.0
