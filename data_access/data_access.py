@@ -30,8 +30,7 @@ if DATA_ACCESS != 'local':
 
 
 def get_image(img_path):
-    """Return the image located at img_path. This function is a priori not suppose 
-    to be used directly and is a utility for the other functions below."""
+    """Return the image or figure located at img_path."""
     if DATA_ACCESS != 'local':
         img_path = BytesIO(BUCKET.blob(img_path).download_as_bytes())
 
