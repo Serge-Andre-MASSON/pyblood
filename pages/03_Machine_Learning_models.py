@@ -25,7 +25,8 @@ def section_1():
              Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC. 
              """)
 
-    image_path = get_figure_path("performance_vs_size", extension='png')
+    image_path = get_figure_path(
+        "data_images_performance_vs_size", extension='png')
     image = get_image(image_path)
 
     st.image(image)
