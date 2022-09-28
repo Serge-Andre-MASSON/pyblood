@@ -15,7 +15,7 @@ PBC_infos_df = load_pickle(pbc_dataset_infos_path)
 
 def all_cell_types(targets):
     """Return a figure with 2X4 axes, each of them showing a particular
-    cell type with a randomly choose representant"""
+    cell type with a randomly chosen representant"""
 
     cell_types = targets.unique()
     fig, axes = plt.subplots(2, 4)

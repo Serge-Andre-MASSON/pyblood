@@ -9,14 +9,34 @@ Practicaly, you may use hard coded path at first and then, create a function tha
 
 TRANSFORMER_ROOT = Path("data/transformers")
 PBC_PICKLES_ROOT = Path("data/PBC_pickles")
+ML_MODELS_ROOT = Path("data/ml_models")
 DL_MODELS_ROOT = Path("data/dl_models")
 FIGURES_ROOT = Path("data/figures")
+
+
+def get_ml_model_path(name: str):
+    if name == 'svc_30':
+        path = ML_MODELS_ROOT / "svc_30.joblib"
+    if name == 'svc_70':
+        path = ML_MODELS_ROOT / "svc_70.joblib"
+    if name == 'svc_100':
+        path = ML_MODELS_ROOT / "svc_100.joblib"
+    if name == 'svc_200':
+        path = ML_MODELS_ROOT / "svc_200.joblib"
+    if name == 'rfc_30':
+        path = ML_MODELS_ROOT / "rfc_30.joblib"
+    if name == 'rfc_70':
+        path = ML_MODELS_ROOT / "rfc_70.joblib"
+    if name == 'rfc_100':
+        path = ML_MODELS_ROOT / "rfc_100.joblib"
+    if name == 'rfc_200':
+        path = ML_MODELS_ROOT / "rfc_200.joblib"
+    return get_correct_path(path)
 
 
 def get_figure_path(figure_name):
     path = FIGURES_ROOT / f"{figure_name}.jpg"
     return str(path)
-
 
 
 def get_transformer_path(size, *args):
