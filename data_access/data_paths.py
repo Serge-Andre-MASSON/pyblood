@@ -34,8 +34,8 @@ def get_ml_model_path(name: str):
     return str(path)
 
 
-def get_figure_path(figure_name):
-    path = FIGURES_ROOT / f"{figure_name}.jpg"
+def get_figure_path(figure_name, extension='jpg'):
+    path = FIGURES_ROOT / f"{figure_name}.{extension}"
     return str(path)
 
 

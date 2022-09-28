@@ -1,12 +1,13 @@
 import streamlit as st
 from PIL import Image
 from data_access.data_paths import get_figure_path, get_ml_model_path
-from data_access.data_access import get_random_image
+from data_access.data_access import get_image, get_random_image
 from joblib import load
 import matplotlib.pyplot as plt
 from data_viz.plot import reload_content
 from crop.crop import Crop
 import numpy as np
+
 
 def section_1():
     st.markdown("## Présentation de la démarche")
@@ -24,9 +25,8 @@ def section_1():
              Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC. 
              """)
 
-
-    image_path = get_figure_path("performance_vs_size")
-    image = Image.open(image_path)
+    image_path = get_figure_path("performance_vs_size", extension='png')
+    image = get_image(image_path)
 
     st.image(image)
 
@@ -40,107 +40,109 @@ def section_1():
 
 def section_2():
     st.markdown("## Prédictions avec une Support Vector Machine")
-    
-    size = st.selectbox("Taille des images en entrée du modèle :", [100, 70, 50, 30], index=1)
-    
+
+    size = st.selectbox("Taille des images en entrée du modèle :", [
+                        100, 70, 50, 30], index=1)
+
     st.markdown("### Prédictions sur la base de données d'entraînement")
-    
+
     model_path = get_ml_model_path('svc_' + str(size))
     model = load(model_path)
-    
+
     def predict_image():
         original_img, cell_type = get_random_image()
         img = original_img.convert('L').resize((size, size))
-        img_data = np.array(img).reshape(1,size**2)
+        img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
         st.write("Type cellulaire prédit :", prediction[0])
         fig = plt.figure()
-        plt.imshow(img, cmap = 'gray')
+        plt.imshow(img, cmap='gray')
         plt.axis('off')
         plt.title(cell_type)
         return fig
-    
+
     fig = predict_image()
     fig_placeholder = st.empty()
     fig_placeholder.pyplot(fig)
 
-    
     st.button(
         "Prédire une autre image",
         key=1,
         on_click=reload_content,
         args=(fig_placeholder.pyplot, predict_image))
-    
+
     st.markdown("### Prédictions de vos images")
-    
-    user_file = st.file_uploader(label = "Charger votre image")
-    
+
+    user_file = st.file_uploader(label="Charger votre image")
+
     if user_file:
         user_img = Image.open(user_file)
         img = user_img.convert('L').resize((size, size))
-        img_data = np.array(img).reshape(1,size**2)
+        img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
         st.write("Type cellulaire prédit :", prediction[0])
         fig = plt.figure()
-        plt.imshow(img, cmap = 'gray')
+        plt.imshow(img, cmap='gray')
         plt.axis('off')
         fig_placeholder2 = st.empty()
         fig_placeholder2.pyplot(fig)
-        
+
+
 def section_3():
-    
+
     st.markdown("## Prédictions avec une Random Forest")
-    
-    size = st.selectbox("Taille des images en entrée du modèle :", [200, 100, 70, 50, 30], index=2)
+
+    size = st.selectbox("Taille des images en entrée du modèle :", [
+                        200, 100, 70, 50, 30], index=2)
 
     st.markdown("### Prédictions sur la base de données d'entraînement")
-  
+
     model_path = get_ml_model_path('rfc_' + str(size))
     model = load(model_path)
-    
+
     def predict_image():
         original_img, cell_type = get_random_image()
         img = original_img.convert('L').resize((size, size))
-        img_data = np.array(img).reshape(1,size**2)
+        img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
         st.write("Type cellulaire prédit :", prediction[0])
         fig = plt.figure()
-        plt.imshow(img, cmap = 'gray')
+        plt.imshow(img, cmap='gray')
         plt.axis('off')
         plt.title(cell_type)
         return fig
-    
+
     fig = predict_image()
     fig_placeholder = st.empty()
     fig_placeholder.pyplot(fig)
 
-    
     st.button(
         "Prédire une autre image",
         key=1,
         on_click=reload_content,
         args=(fig_placeholder.pyplot, predict_image))
-    
+
     st.markdown("### Prédictions de vos images")
-        
-    user_file = st.file_uploader(label = "Charger votre image")
-        
+
+    user_file = st.file_uploader(label="Charger votre image")
+
     if user_file:
         user_img = Image.open(user_file)
         img = user_img.convert('L').resize((size, size))
-        img_data = np.array(img).reshape(1,size**2)
+        img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
         st.write("Type cellulaire prédit :", prediction[0])
         fig = plt.figure()
-        plt.imshow(img, cmap = 'gray')
+        plt.imshow(img, cmap='gray')
         plt.axis('off')
         fig_placeholder2 = st.empty()
-        fig_placeholder2.pyplot(fig)   
+        fig_placeholder2.pyplot(fig)
+
 
 page_names_to_funcs = {
     "Présentation de la démarche": section_1,
     "Support Vector Machine": section_2,
-    "Random Forest" : section_3
+    "Random Forest": section_3
 }
 
 selected_page = st.sidebar.selectbox(
