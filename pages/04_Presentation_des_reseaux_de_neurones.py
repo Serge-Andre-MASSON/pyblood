@@ -2,11 +2,6 @@ import streamlit as st
 
 from data_access.data_access import load_pickle
 from data_access.data_paths import get_figure_path, get_pbc_dataset_infos_paths
-from keras.applications.vgg16 import VGG16
-from keras.layers.preprocessing.image_preprocessing import Rescaling
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout, Conv2D, MaxPooling2D, BatchNormalization, LeakyReLU, Flatten
-from tensorflow.keras.models import Model, Sequential, load_model
-from tensorflow.keras.models import load_model
 
 # Présentation du contenu sur la sidebar
 st.sidebar.markdown("# Présentation des CNN utilisés")
@@ -27,6 +22,7 @@ def section_1():
     figure_path = get_figure_path("vgg16_summary")
     # image du résumé du modèle vgg16
     img = Image.open(figure_path)
+    
 
     # display image using streamlit
     # width is used to set the width of an image
@@ -39,6 +35,7 @@ def section_1():
     figure_path = get_figure_path("rapport_classification_vgg16")
     # image du résumé du modèle vgg16
     img_2 = Image.open(figure_path)
+    
     col1, col2, col3 = st.columns([0.2, 1, 0.2])
     col2.image(img_2, use_column_width=True, width=200)
 
@@ -51,10 +48,8 @@ def section_1():
 def section_2():
     st.header("Modèle de transfer learning avec InceptionV3")
     st.subheader("Paramètres du modèle et résultats")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
+    st.write(4*"\n")
+   
     from PIL import Image
     # image du résumé du modèle inceptionV3
     img_4 = Image.open(get_figure_path("inceptionv3_summary"))
@@ -75,10 +70,8 @@ def section_2():
 def section_3():
     st.header("Modèle de transfer learning avec Densenet121")
     st.subheader("Paramètres du modèle et résultats")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
+    st.write(4*"\n")
+    
     from PIL import Image
     # image du résumé du modèle Densenet121
     img_4 = Image.open(get_figure_path("densenet_summary"))
@@ -99,10 +92,8 @@ def section_3():
 def section_4():
     st.header("Modèle de transfer learning avec Basic Model")
     st.subheader("Paramètres du modèle et résultats")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
-    st.write("\n")
+    st.write(4*"\n")
+   
     from PIL import Image
     # image du résumé du modèle Basic Model
     img_4 = Image.open(get_figure_path("basic_model_summary"))

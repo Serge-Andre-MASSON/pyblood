@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from PIL import Image
 
 """This module is supposed to build all the paths that the application needs. 
 The purpose is to avoid to use hard coded paths.
@@ -16,6 +16,7 @@ FIGURES_ROOT = Path("data/figures")
 def get_figure_path(figure_name):
     path = FIGURES_ROOT / f"{figure_name}.jpg"
     return str(path)
+
 
 
 def get_transformer_path(size, *args):
