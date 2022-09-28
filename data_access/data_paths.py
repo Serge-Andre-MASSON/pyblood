@@ -31,7 +31,7 @@ def get_ml_model_path(name: str):
         path = ML_MODELS_ROOT / "rfc_100.joblib"
     if name == 'rfc_200':
         path = ML_MODELS_ROOT / "rfc_200.joblib"
-    return get_correct_path(path)
+    return str(path)
 
 
 def get_figure_path(figure_name):
