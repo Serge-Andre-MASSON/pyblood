@@ -1,7 +1,7 @@
 import streamlit as st
 
-from data_access.data_access import get_image, load_pickle
-from data_access.data_paths import get_figure_path, get_pbc_dataset_infos_paths
+from data_access.data_access import get_image
+from data_access.data_paths import get_figure_path
 
 # Présentation du contenu sur la sidebar
 st.sidebar.markdown("# Présentation des CNN utilisés")
@@ -19,7 +19,7 @@ def section_1():
     # import Image from pillow to open images
     from PIL import Image
     # chemin d'accès aux figures
-    figure_path = get_figure_path("vgg16_summary_1")
+    figure_path = get_figure_path("vgg16_summary")
     # image du résumé du modèle vgg16
     img = get_image(figure_path)
 
@@ -50,7 +50,7 @@ def section_2():
 
     from PIL import Image
     # image du résumé du modèle inceptionV3
-    img_4 = get_image(get_figure_path("inceptionv3_summary_1"))
+    img_4 = get_image(get_figure_path("inceptionv3_summary"))
     st.image(img_4, width=800)
     st.write("L’entraînement du modèle est effectué sur seulement 10 epochs et nous obtenons une accuracy de 92% contre 90% sans fine-tuning avec un temps d’entraînement d’environ 10 minutes. En revanche, nous remarquons un overfitting assez important avec ce modèle.")
 
@@ -72,7 +72,7 @@ def section_3():
 
     from PIL import Image
     # image du résumé du modèle Densenet121
-    img_4 = get_image(get_figure_path("densenet_summary_1"))
+    img_4 = get_image(get_figure_path("densenet_summary"))
     st.image(img_4, width=800)
     st.write("L’entraînement du modèle est effectué sur seulement 25 epochs et nous obtenons une accuracy de 98% contre 95% sans fine-tuning avec un temps d’entraînement d’environ 50 minutes.")
 
@@ -94,7 +94,7 @@ def section_4():
 
     from PIL import Image
     # image du résumé du modèle Basic Model
-    img_4 = get_image(get_figure_path("basic_model_summary_1"))
+    img_4 = get_image(get_figure_path("basic_model_summary"))
     st.image(img_4, width=800)
     st.write("L’entraînement du modèle est effectué jusqu’à ce que l’accuracy de validation augmente de moins de 0.1% sur 10 epochs, avec également un mécanisme de réduction du taux d’apprentissage en cas de détection de plateau. Nous obtenons une accuracy de 96% avec un temps d’entraînement d’environ 30 minutes. Nous constatons que le phénomène de divergence précédemment observé se reproduit, mais plus tard, à partir de la 20ème epoch environ. De plus, il est moins prononcé, l’accuracy d’entraînement montant jusqu’aux alentours de 99% tandis que celle de validation plafonne autour de 96% à partir de la 25ème epoch environ.")
     # image du rapport de classification Basic Model
