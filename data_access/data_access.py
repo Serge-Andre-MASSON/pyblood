@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 
 from data_access.data_paths import get_pbc_dataset_infos_paths
 
+from joblib import load
+
 BUCKET = ''
 load_dotenv()
 DATA_ACCESS = os.getenv("DATA_ACCESS")
@@ -74,4 +76,14 @@ def load_dl_model(path):
         path = h5py.File(path)
 
     model = tf.keras.models.load_model(path)
+    return model
+
+@st.cache(allow_output_mutation=True)
+def load_ml_model(path):
+    """Load the model located at the specified path."""
+    if DATA_ACCESS != 'local':
+        path = BytesIO(BUCKET.blob(path).download_as_bytes())
+        path = h5py.File(path)
+
+    model = load(path)
     return model

@@ -1,8 +1,7 @@
 import streamlit as st
 from PIL import Image
-from data_access.data_paths import get_figure_path, get_ml_model_path
-from data_access.data_access import get_image, get_random_image
-from joblib import load
+from data_access.data_paths import get_figure_path
+from data_access.data_access import get_image, get_random_image, load_ml_model
 import matplotlib.pyplot as plt
 from data_viz.plot import reload_content
 from crop.crop import Crop
@@ -47,8 +46,7 @@ def section_2():
 
     st.markdown("### Prédictions sur la base de données d'entraînement")
 
-    model_path = get_ml_model_path('svc_' + str(size))
-    model = load(model_path)
+    model = load_ml_model('data/ml_models/svc_'+str(size)+'.joblib')
 
     def predict_image():
         original_img, cell_type = get_random_image()
@@ -98,8 +96,7 @@ def section_3():
 
     st.markdown("### Prédictions sur la base de données d'entraînement")
 
-    model_path = get_ml_model_path('rfc_' + str(size))
-    model = load(model_path)
+    model = load_ml_model('data/ml_models/rfc_'+str(size)+'.joblib')
 
     def predict_image():
         original_img, cell_type = get_random_image()
