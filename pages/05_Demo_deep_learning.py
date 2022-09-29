@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from data_access.data_access import load_pickle
+from data_access.data_access import get_image, load_pickle
 from data_access.data_paths import get_dl_mismatch_path
 from data_viz.dl_plot import plot_predictions
 
@@ -90,9 +90,9 @@ def images_from_original_dataset():
 
         if i < l:
             path, _, pred = pred_cell_type_mimatch_df.iloc[i]
-            img = plt.imread(path)
+            img = get_image(path)
         else:
-            img = np.zeros_like(img) + 255
+            img = np.zeros((256, 256, 3)) + 255
         ax.imshow(img)
         ax.set_axis_off()
 
