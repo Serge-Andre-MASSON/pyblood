@@ -14,26 +14,6 @@ DL_MODELS_ROOT = Path("data/dl_models")
 FIGURES_ROOT = Path("data/figures")
 
 
-def get_ml_model_path(name: str):
-    if name == 'svc_30':
-        path = ML_MODELS_ROOT / "svc_30.joblib"
-    if name == 'svc_70':
-        path = ML_MODELS_ROOT / "svc_70.joblib"
-    if name == 'svc_100':
-        path = ML_MODELS_ROOT / "svc_100.joblib"
-    if name == 'svc_200':
-        path = ML_MODELS_ROOT / "svc_200.joblib"
-    if name == 'rfc_30':
-        path = ML_MODELS_ROOT / "rfc_30.joblib"
-    if name == 'rfc_70':
-        path = ML_MODELS_ROOT / "rfc_70.joblib"
-    if name == 'rfc_100':
-        path = ML_MODELS_ROOT / "rfc_100.joblib"
-    if name == 'rfc_200':
-        path = ML_MODELS_ROOT / "rfc_200.joblib"
-    return str(path)
-
-
 def get_figure_path(figure_name, extension='jpg'):
     path = FIGURES_ROOT / f"{figure_name}.{extension}"
     return str(path)
