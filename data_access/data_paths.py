@@ -71,3 +71,8 @@ def get_pbc_dataset_infos_paths(name: str):
 def get_dl_model_path(model_name):
     path = DL_MODELS_ROOT / f"{model_name}.h5"
     return str(path)
+
+
+def get_dl_mismatch_path(model_name):
+    path = DL_MODELS_ROOT / f"{model_name}_mismatch.PICKLE"
+    return str(path)
