@@ -83,7 +83,6 @@ def load_ml_model(path):
     """Load the model located at the specified path."""
     if DATA_ACCESS != 'local':
         path = BytesIO(BUCKET.blob(path).download_as_bytes())
-        path = h5py.File(path)
 
     model = load(path)
     return model
