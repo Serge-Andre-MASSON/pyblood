@@ -10,11 +10,11 @@ CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
 
 
 @st.experimental_memo
-def plot_predictions(counter):
+def plot_predictions(model_name, counter):
     img, target = get_random_image()
     img = img.resize((256, 256))
     tensor_img = tf.keras.utils.img_to_array(img).reshape(-1, 256, 256, 3)
-    model_path = get_dl_model_path('dense_net')
+    model_path = get_dl_model_path(f'{model_name}')
     model = load_dl_model(model_path)
     prediction = model.predict(tensor_img)[0]
 
