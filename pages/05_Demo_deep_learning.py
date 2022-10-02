@@ -19,8 +19,8 @@ def increment_counter(counter_state):
 
 def describe_model(model_name):
     def images_from_original_dataset():
-        pred_counter = f'{model_name}_pred_counter'
-        init_session_state(pred_counter)
+        pred_counter_key = f'{model_name}_session_counter'
+        init_session_state(pred_counter_key)
         st.markdown(f"# {model_name}")
         st.markdown("## Inférence sur les images du dataset original")
         st.write("""Le modèle utilisé est le model dense net 121, initialisé avec les poids 'image_net',
@@ -28,7 +28,7 @@ def describe_model(model_name):
         le fonctionnement du modèle proviennent indifférement du jeu d'entrainement ou du jeu de validation.""")
 
         col1, col2 = st.columns(2)
-        pred_counter = st.session_state[pred_counter]
+        pred_counter = st.session_state[pred_counter_key]
         fig_1, fig_2, correctness, prediction = plot_predictions(
             model_name, pred_counter)
         with col1:
@@ -42,7 +42,8 @@ def describe_model(model_name):
             st.write(
                 f"La prediction est {correctness} comme probable à {prediction.max()*100:.0f}%.")
 
-        st.button("reload", on_click=increment_counter, args=(pred_counter,))
+        st.button("reload", on_click=increment_counter,
+                  args=(pred_counter_key,))
 
         st.markdown("## Etude des erreurs faites par le modèle")
         st.markdown("### Répartition")
