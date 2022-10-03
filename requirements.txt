@@ -11,3 +11,4 @@ python-dotenv==0.21.0
 h5py==3.7.0
 PyYAML==6.0
 seaborn==0.12.0
+streamlit-cropper==0.2.0
