@@ -31,12 +31,12 @@ if DATA_ACCESS != 'local':
     DATA_ACCESS = 'google clood'
 
 
-def get_image(img_path):
+def get_image(path):
     """Return the image or figure located at img_path."""
     if DATA_ACCESS != 'local':
-        img_path = BytesIO(BUCKET.blob(img_path).download_as_bytes())
+        path = BytesIO(BUCKET.blob(path).download_as_bytes())
 
-    with Image.open(img_path) as f:
+    with Image.open(path) as f:
         img = f.copy()
 
     return img
@@ -77,6 +77,7 @@ def load_dl_model(path):
 
     model = tf.keras.models.load_model(path)
     return model
+
 
 @st.cache(allow_output_mutation=True)
 def load_ml_model(path):
