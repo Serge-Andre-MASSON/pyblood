@@ -38,7 +38,7 @@ COMMENTS = {
 def get_section(model_name):
     def section():
         st.markdown(f"# Modèle de transfer learning avec {model_name}")
-        st.markdown("##Paramètres du modèle et résultats")
+        st.markdown("## Paramètres du modèle et résultats")
         st.write(4*"\n")
 
         # image du résumé du modèle
