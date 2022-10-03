@@ -1,8 +1,10 @@
-from data_access.data_access import get_random_image, load_dl_model
-from data_access.data_paths import get_dl_model_path
+from data_access.data_access import get_image, get_random_image, load_dl_model, load_pickle
+from data_access.data_paths import get_dl_mismatch_path, get_dl_model_path
 import tensorflow as tf
 import streamlit as st
+import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
@@ -30,3 +32,46 @@ def plot_predictions(model_name, counter):
     correctness = "correcte et estimée" if target == CLASSES[
         prediction.argmax()] else "incorrecte, bien qu'estimée"
     return fig_1, fig_2, correctness, prediction
+
+
+@st.experimental_memo
+def plot_mismatch_distribution(model_name):
+    mismatch_df_path = get_dl_mismatch_path(model_name)
+    mismatch_df = load_pickle(mismatch_df_path)
+
+    fig, ax = plt.subplots()
+
+    sns.countplot(x=mismatch_df.true_cell_type,
+                  hue=mismatch_df.predicted_cell_type, ax=ax)
+    ax.tick_params(labelrotation=45)
+    ax.set_title(
+        "Répartition du type d'erreur en fonction du type cellulaire réel")
+    ax.set_xlabel("Type cellulaire")
+    ax.set_ylabel("type prédit")
+
+    ax.set_yticks(range(0, len(mismatch_df)//5, len(mismatch_df)//12))
+    ax.set_yticklabels(
+        [i for i in range(0, len(mismatch_df)//5, len(mismatch_df)//12)])
+    ax.get_legend().set_title("Prédiction")
+
+    return fig, mismatch_df
+
+
+@st.experimental_memo
+def plot_pred_compare_with_truth(pred_cell_type_mimatch_df, cell_by_row=4):
+    l = len(pred_cell_type_mimatch_df)
+    fig, axes = plt.subplots(l // cell_by_row + 1,
+                             min(cell_by_row, l), figsize=(2*cell_by_row, l))
+    try:
+        axes = axes.flatten()
+    except AttributeError:
+        axes = [axes]
+    for i, ax in enumerate(axes):
+        if i < l:
+            path, _, pred = pred_cell_type_mimatch_df.iloc[i]
+            img = get_image(path)
+        else:
+            img = np.zeros((256, 256, 3)) + 255
+        ax.imshow(img)
+        ax.set_axis_off()
+    return fig
