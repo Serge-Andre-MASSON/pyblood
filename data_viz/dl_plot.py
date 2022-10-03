@@ -5,19 +5,47 @@ import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
+from urllib.request import urlopen
 
 
 CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
            'lymphocyte', 'monocyte', 'neutrophil', 'platelet']
 
 
-@st.experimental_memo
-def plot_predictions(model_name, counter):
-    img, target = get_random_image()
-    img = img.resize((256, 256))
-    tensor_img = tf.keras.utils.img_to_array(img).reshape(-1, 256, 256, 3)
+def load_model(model_name):
     model_path = get_dl_model_path(f'{model_name}')
     model = load_dl_model(model_path)
+    return model
+
+
+def predict_image(model_name, img: Image, img_size=256):
+    img = img.resize((img_size, img_size))
+    tensor_img = tf.keras.utils.img_to_array(
+        img).reshape(-1, img_size, img_size, 3)
+    model = load_model(model_name)
+    prediction = model.predict(tensor_img)[0]
+    return prediction
+
+
+def predict_url(model, url: str, img_size_for_model=256):
+    with Image.open(urlopen(url)) as i:
+        img = i.copy()
+    return predict_image(model, img)
+
+
+@st.experimental_memo
+def plot_predictions(model_name, counter, img_size=256, url="", cell_type=""):
+    model = load_model(model_name)
+    if not url:
+        img, target = get_random_image()
+    else:
+        target = cell_type
+        with Image.open(urlopen(url)) as i:
+            img = i.copy()
+    img = img.resize((img_size, img_size))
+    tensor_img = tf.keras.utils.img_to_array(
+        img).reshape(-1, img_size, img_size, 3)
     prediction = model.predict(tensor_img)[0]
 
     fig_1, ax = plt.subplots()
