@@ -1,13 +1,14 @@
-from data_access.data_access import load_pickle
 import streamlit as st
-from data_viz.plot import (
-    plot_gs_crop,
+from data_viz.ml_img_preprocessing import (
+    plot_bw_crop,
     plot_pca,
     plot_select_percentile_mask,
-    reload_content,
-    plot_color_and_bg_img,
+    plot_color_and_bw_img,
     multi_sized_images
 )
+from session.state import (
+    init_session_states,
+    increment_counter)
 
 
 # Présentation du contenu sur la sidebar
@@ -23,6 +24,12 @@ def resampling():
 
 
 def image_reduction():
+    color_and_bw_counter_key = "color_and_bw_counter"
+    multi_sized_images_counter_key = "multi_sized_images_counter"
+    init_session_states(
+        color_and_bw_counter_key,
+        multi_sized_images_counter_key)
+
     st.markdown("## Réduction de la taille des données")
 
     st.markdown('### Images en niveaux de gris')
@@ -30,30 +37,31 @@ def image_reduction():
     palette de couleurs présente dans chaque image, on a estimé que se
     contenter de la version noir et blanc des images ne devrait pas représenter
     une grosse perte d'information.""")
-
-    fig_placeholder = st.empty()
-    fig = plot_color_and_bg_img()
-    fig_placeholder.pyplot(fig)
+    color_and_bw_counter = st.session_state[color_and_bw_counter_key]
+    fig = plot_color_and_bw_img(color_and_bw_counter)
+    st.pyplot(fig)
 
     st.button(
         "Charger une autre image",
         key=1,
-        on_click=reload_content,
-        args=(fig_placeholder.pyplot, plot_color_and_bg_img))
+        on_click=increment_counter,
+        args=(color_and_bw_counter_key,))
+
     st.markdown('### Différentes tailles pour les images')
 
     st.write("""D'abord dans une volonté de pouvoir rapidement tester les algorithmes
     on a généré des jeux de données contenant les images en noir et blanc et en
     tailles réduites : de 30x30 à 200x200""")
 
-    placeholder = st.empty()
-    placeholder.pyplot(multi_sized_images())
+    multi_sized_images_counter = st.session_state[
+        multi_sized_images_counter_key]
+    st.pyplot(multi_sized_images(multi_sized_images_counter))
 
     st.button(
         "Charger d'autres images",
         key=2,
-        on_click=reload_content,
-        args=(placeholder.pyplot, multi_sized_images))
+        on_click=increment_counter,
+        args=(multi_sized_images_counter_key,))
 
     st.write("""Lors des tests des différents algorithmes, on s'est rendu compte que
     réduire la taille de l'image avait un réel impact sur la qualité de la prédiction
@@ -61,6 +69,11 @@ def image_reduction():
 
 
 def feature_selection():
+    plot_sp_mask_counter_key = "plot_sp_mask_counter"
+    plot_bw_crop_counter_key = "plot_gs_counter"
+    init_session_states(
+        plot_sp_mask_counter_key,
+        plot_bw_crop_counter_key)
     st.markdown("## Selection de features")
 
     st.markdown("### SelectPercentile")
@@ -73,38 +86,36 @@ def feature_selection():
     obtenant les meilleurs scores.""")
 
     size = st.selectbox("Taille des images :", [200, 100, 70, 50, 30], index=2)
+    plot_sp_mask_counter = st.session_state[plot_sp_mask_counter_key]
+    fig = plot_select_percentile_mask(size, plot_sp_mask_counter)
 
-    placeholder_0 = st.empty()
-    fig = plot_select_percentile_mask(size)
-
-    placeholder_0.pyplot(fig)
+    st.pyplot(fig)
 
     st.button(
         "Charger une autre image",
         key=3,
-        on_click=reload_content,
-        args=(placeholder_0.pyplot, plot_select_percentile_mask, size))
+        on_click=increment_counter,
+        args=(plot_sp_mask_counter_key,))
 
     st.markdown("""### Rognage automatique""")
     st.write("""On a mis au point un algorithme permettant dans la plupart des cas
     de repérer automatiquement la zone d'intérêt d'une image. L'idée de cet algorithme
     est de calculer l'écart type des valeurs des pixels selon les axes horizontaux
-    et verticaux : lorsque l'écart type change sensiblement de valeur c'est que ce que 
+    et verticaux : lorsque l'écart type change sensiblement de valeur c'est que ce que
     l'on trouve le long de l'axe diffère sensiblement du fond de l'image.""")
 
-    placeholder_1 = st.empty()
+    plot_bw_crop_counter = st.session_state[plot_bw_crop_counter_key]
+    fig = plot_bw_crop(size, plot_bw_crop_counter)
+    st.pyplot(fig)
 
-    fig = plot_gs_crop(size)
-    placeholder_1.pyplot(fig)
-
-    st.button("Recharger", on_click=reload_content,
-              args=(placeholder_1.pyplot, plot_gs_crop, size))
+    st.button("Recharger", on_click=increment_counter,
+              args=(plot_bw_crop_counter_key,))
 
 
 def dimension_reduction():
     st.markdown("## Réduction de dimension")
     st.write("On a réduit la dimension de notre jeu de données en utilisant l'algorithme principal Component Analysis (PCA).")
-    # TODO : ajouter crop_pca_100 et pca_100
+
     size = st.selectbox("Taille des images :", [70, 50, 30], index=2)
     st.markdown("### PCA sur données brutes")
     st.write("Le résultat sur les données brutes est le suivant:")
