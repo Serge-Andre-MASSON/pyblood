@@ -1,4 +1,6 @@
 import streamlit as st
+from data_access.data_access import load_pickle
+from data_access.data_paths import get_pbc_dataset_infos_paths
 from data_viz.ml_img_preprocessing import (
     plot_bw_crop,
     plot_pca,
@@ -6,6 +8,7 @@ from data_viz.ml_img_preprocessing import (
     plot_color_and_bw_img,
     multi_sized_images
 )
+from data_viz.plot import cell_types_distribution, plot_accurracies_vs_size_according_to_sampling
 from session.state import (
     init_session_states,
     increment_counter)
@@ -20,7 +23,19 @@ et sur les images pour optimiser la quantité et la qualité des données.""")
 # Chaque section est contenue dans une fonction
 def resampling():
     st.markdown("## Rééchantillonnage du jeux de données")
-    st.write("à compléter")
+    st.write("""Le jeu de données utilisé pour l'entrainement des modèles de machine 
+    learning est déséquilibré.""")
+
+    targets_path = get_pbc_dataset_infos_paths('targets')
+    targets = load_pickle(targets_path)
+    fig = cell_types_distribution(targets)
+
+    st.pyplot(fig, clear_figure=True)
+
+    st.write("""Comme le montre la figure ci-dessous (pour le modèle random forest), il a été avantageux de procéder 
+    à un ré-échantillonnage du jeux de données.""")
+    fig = plot_accurracies_vs_size_according_to_sampling()
+    st.pyplot(fig, clear_figure=True)
 
 
 def image_reduction():
