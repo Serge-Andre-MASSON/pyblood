@@ -1,8 +1,10 @@
 # Data
 data
 
+# Notebooks
+*.ipynb
+
 # Secrets
-.streamlit/
 .streamlit/
 
 # Byte-compiled / optimized / DLL files
