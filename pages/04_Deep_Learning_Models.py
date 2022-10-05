@@ -100,12 +100,10 @@ def get_section(model_name, img_size=256):
         fig_1_1, fig_1_2, correctness, prediction = plot_predictions(
             model_name, pred_counter, img_size)
         with col_1_1:
-            img_placeholder = st.empty()
-            img_placeholder.pyplot(fig_1_1)
+            st.pyplot(fig_1_1)
 
         with col_1_2:
-            barplot_placeholder = st.empty()
-            barplot_placeholder.pyplot(fig_1_2)
+            st.pyplot(fig_1_2)
 
             st.write(
                 f"La prediction est {correctness} comme probable à {prediction.max()*100:.0f}%.")
