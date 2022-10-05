@@ -4,10 +4,10 @@ from streamlit_cropper import st_cropper
 import matplotlib.pyplot as plt
 import streamlit as st
 
-from data_access.data_access import get_image
+from data_access.data_access import get_image, load_dl_model
 from data_access.data_urls import urls_by_cell_type
-from data_access.data_paths import get_figure_path
-from data_viz.dl_plot import CLASSES, plot_mismatch_distribution, plot_pred_compare_with_truth, plot_predictions, predict_image
+from data_access.data_paths import get_dl_model_path, get_figure_path
+from data_viz.dl_plot import CLASSES, plot_mismatch_distribution, plot_pred_compare_with_truth, plot_prediction_for_a_dataset_random_image, plot_prediction_for_an_external_image
 from session.state import increment_counter, init_session_states
 
 # Présentation du contenu sur la sidebar
@@ -97,46 +97,43 @@ def get_section(model_name, img_size=256):
         st.markdown("### Jeux de données original")
         col_1_1, col_1_2 = st.columns(2)
         pred_counter = st.session_state[pred_counter_key]
-        fig_1_1, fig_1_2, correctness, prediction = plot_predictions(
+
+        fig_1_1, fig_1_2, pred_eval = plot_prediction_for_a_dataset_random_image(
             model_name, pred_counter, img_size)
+
         with col_1_1:
             st.pyplot(fig_1_1)
-
         with col_1_2:
             st.pyplot(fig_1_2)
-
-            st.write(
-                f"La prediction est {correctness} comme probable à {prediction.max()*100:.0f}%.")
+            st.write(pred_eval)
 
         st.button("reload", on_click=increment_counter,
                   args=(pred_counter_key,))
 
         st.markdown(
             "## Images externes au jeu de données original")
+
         cell_type = st.selectbox(
             "Type cellulaire", CLASSES)
         url = st.selectbox("Images", urls_by_cell_type[cell_type])
 
-        test_img = Image.open(urlopen(url))
-        w, h = test_img.size
+        url_img = Image.open(urlopen(url))
+        # Les lignes ci-dessous permettent de diminiuer la taille réelle de l'image
+        # pour que cette dernière tienne dans la colonne : elle ne s'adapte pas
+        # automatiquement au contenant.
+        w, h = url_img.size
         max_width = 350
-        test_img = test_img.resize((max_width, h * max_width // w))
+        url_img = url_img.resize((max_width, h * max_width // w))
+
         col1, col2 = st.columns(2)
         with col1:
-            cropped_img = st_cropper(test_img, realtime_update=True, box_color='black',
+            cropped_img = st_cropper(url_img, realtime_update=True, box_color='black',
                                      aspect_ratio=(1, 1))
         with col2:
-
-            fig, ax = plt.subplots()
-            probas = predict_image(model_name, cropped_img)
-            pred_index = probas.argmax()
-            ax.bar(CLASSES, height=probas)
-            ax.tick_params(axis='x', labelrotation=45)
+            fig, pred_eval = plot_prediction_for_an_external_image(
+                model_name, cropped_img, cell_type, img_size)
             st.pyplot(fig)
-            correctness = "correcte et estimée" if cell_type == CLASSES[
-                pred_index] else "incorrecte, bien qu'estimée"
-            st.write(
-                f"La prediction est {correctness} comme probable à {probas.max()*100:.0f}%.")
+            st.write(pred_eval)
 
     return section
 

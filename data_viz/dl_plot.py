@@ -13,55 +13,6 @@ CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
            'lymphocyte', 'monocyte', 'neutrophil', 'platelet']
 
 
-def load_model(model_name):
-    model_path = get_dl_model_path(f'{model_name}')
-    model = load_dl_model(model_path)
-    return model
-
-
-def predict_image(model_name, img: Image, img_size=256):
-    img = img.resize((img_size, img_size))
-    tensor_img = tf.keras.utils.img_to_array(
-        img).reshape(-1, img_size, img_size, 3)
-    model = load_model(model_name)
-    prediction = model.predict(tensor_img)[0]
-    return prediction
-
-
-def predict_url(model, url: str, img_size_for_model=256):
-    with Image.open(urlopen(url)) as i:
-        img = i.copy()
-    return predict_image(model, img)
-
-
-@st.experimental_memo
-def plot_predictions(model_name, counter, img_size=256, url="", cell_type=""):
-    model = load_model(model_name)
-    if not url:
-        img, target = get_random_image()
-    else:
-        target = cell_type
-        with Image.open(urlopen(url)) as i:
-            img = i.copy()
-    img = img.resize((img_size, img_size))
-    tensor_img = tf.keras.utils.img_to_array(
-        img).reshape(-1, img_size, img_size, 3)
-    prediction = model.predict(tensor_img)[0]
-
-    fig_1, ax = plt.subplots()
-    ax.imshow(img)
-    ax.set_title(target)
-    ax.set_axis_off()
-
-    fig_2, ax = plt.subplots()
-    ax.bar(CLASSES, height=prediction)
-    ax.set_title("Prévision")
-    ax.tick_params(axis='x', labelrotation=45)
-    correctness = "correcte et estimée" if target == CLASSES[
-        prediction.argmax()] else "incorrecte, bien qu'estimée"
-    return fig_1, fig_2, correctness, prediction
-
-
 @st.experimental_memo
 def plot_mismatch_distribution(model_name):
     mismatch_df_path = get_dl_mismatch_path(model_name)
@@ -103,3 +54,59 @@ def plot_pred_compare_with_truth(pred_cell_type_mimatch_df, cell_by_row=4):
         ax.imshow(img)
         ax.set_axis_off()
     return fig
+
+
+def load_model(model_name):
+    model_path = get_dl_model_path(f'{model_name}')
+    model = load_dl_model(model_path)
+    return model
+
+
+def predict_image(model, img: Image, img_size=256):
+    img = img.resize((img_size, img_size))
+    tensor_img = tf.keras.utils.img_to_array(
+        img).reshape(-1, img_size, img_size, 3)
+    prediction = model.predict(tensor_img)[0]
+    return prediction
+
+
+def get_pred_evaluation(cell_type, prediction):
+    predicted_cell_type = prediction.argmax()
+    correctness = "correcte et estimée" if cell_type == CLASSES[
+        predicted_cell_type] else "incorrecte, bien qu'estimée"
+    return f"La prediction est {correctness} comme probable à {prediction.max()*100:.0f}%."
+
+
+def plot_prediction(prediction):
+    fig, ax = plt.subplots()
+    ax.bar(CLASSES, height=prediction)
+    ax.set_title("Prévision")
+    ax.tick_params(axis='x', labelrotation=45)
+    return fig
+
+
+@st.experimental_memo
+def plot_prediction_for_a_dataset_random_image(model_name, counter, img_size=256):
+    model = load_model(model_name)
+    img, cell_type = get_random_image()
+    prediction = predict_image(model, img, img_size=img_size)
+
+    fig_1, ax = plt.subplots()
+    ax.imshow(img)
+    ax.set_title(cell_type)
+    ax.set_axis_off()
+
+    fig_2 = plot_prediction(prediction)
+
+    return fig_1, fig_2, get_pred_evaluation(cell_type, prediction)
+
+
+def plot_prediction_for_an_external_image(
+        model_name, img, cell_type, img_size=256):
+
+    model = load_model(model_name)
+    prediction = predict_image(model, img, img_size=img_size)
+
+    fig = plot_prediction(prediction)
+    pred_eval = get_pred_evaluation(cell_type, prediction)
+    return fig, pred_eval
