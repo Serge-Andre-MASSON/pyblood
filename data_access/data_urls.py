@@ -1,3 +1,8 @@
+from urllib.request import urlopen
+from PIL import Image
+import streamlit as st
+
+
 urls_by_cell_type = {'basophil': [
     "https://imagebank.hematology.org/getimagebyid/60504?size=3",
     "https://imagebank.hematology.org/getimagebyid/60505?size=3",
@@ -21,3 +26,10 @@ urls_by_cell_type = {'basophil': [
         "http://imagebank.hematology.org/getimagebyid/61935?size=2"
 ],
     'platelet': ["A compléter"]}
+
+
+@st.cache
+def get_image_by_url(url):
+    with Image.open(urlopen(url)) as img:
+        img = img.copy()
+    return img
