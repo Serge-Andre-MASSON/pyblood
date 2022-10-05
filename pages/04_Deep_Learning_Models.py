@@ -1,14 +1,16 @@
-from urllib.request import urlopen
-from PIL import Image
 from streamlit_cropper import st_cropper
-import matplotlib.pyplot as plt
 import streamlit as st
 
-from data_access.data_access import get_image, load_dl_model
-from data_access.data_urls import urls_by_cell_type
-from data_access.data_paths import get_dl_model_path, get_figure_path
-from data_viz.dl_plot import CLASSES, plot_mismatch_distribution, plot_pred_compare_with_truth, plot_prediction_for_a_dataset_random_image, plot_prediction_for_an_external_image
 from session.state import increment_counter, init_session_states
+from data_access.data_urls import urls_by_cell_type, get_image_by_url
+
+from data_viz.dl_plot import (
+    CLASSES,
+    get_model_summary,
+    plot_mismatch_distribution,
+    plot_pred_compare_with_truth,
+    plot_prediction_for_a_dataset_random_image,
+    plot_prediction_for_an_external_image)
 
 # Présentation du contenu sur la sidebar
 st.sidebar.markdown("# Présentation des CNN utilisés")
@@ -47,21 +49,18 @@ def get_section(model_name, img_size=256):
         st.markdown("## Paramètres du modèle et résultats")
         st.write(4*"\n")
 
+        network_img, classification_report, accuracies = get_model_summary(
+            model_name)
         # image du résumé du modèle
-        network_img = get_image(get_figure_path(f"{model_name}_summary"))
         st.image(network_img, width=800)
         st.write(COMMENTS[model_name])
 
-        # image du rapport de classification
-        classification_report = get_image(
-            get_figure_path(f"rapport_classification_{model_name}"))
         _, col2, _ = st.columns([0.2, 1, 0.2])
+        # image du rapport de classification
         col2.image(classification_report, use_column_width=True, width=200)
 
         # image de la courbe accuracy
-        curve_img = get_image(get_figure_path(f"courbe_{model_name}"))
-        _, col2, _ = st.columns([0.2, 0.5, 0.2])
-        col2.image(curve_img, use_column_width=True, width=200)
+        col2.image(accuracies, use_column_width=True, width=200)
 
         st.markdown("## Etude des erreurs faites par le modèle")
         st.markdown("### Répartition")
@@ -117,7 +116,8 @@ def get_section(model_name, img_size=256):
             "Type cellulaire", CLASSES)
         url = st.selectbox("Images", urls_by_cell_type[cell_type])
 
-        url_img = Image.open(urlopen(url))
+        url_img = get_image_by_url(url)
+
         # Les lignes ci-dessous permettent de diminiuer la taille réelle de l'image
         # pour que cette dernière tienne dans la colonne : elle ne s'adapte pas
         # automatiquement au contenant.

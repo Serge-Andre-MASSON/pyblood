@@ -1,16 +1,23 @@
 from data_access.data_access import get_image, get_random_image, load_dl_model, load_pickle
-from data_access.data_paths import get_dl_mismatch_path, get_dl_model_path
+from data_access.data_paths import get_dl_mismatch_path, get_dl_model_path, get_figure_path
 import tensorflow as tf
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-from urllib.request import urlopen
 
 
 CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
            'lymphocyte', 'monocyte', 'neutrophil', 'platelet']
+
+
+def get_model_summary(model_name):
+    network_img = get_image(get_figure_path(f"{model_name}_summary"))
+    classification_report = get_image(
+        get_figure_path(f"rapport_classification_{model_name}"))
+    accuracies = get_image(get_figure_path(f"courbe_{model_name}"))
+    return network_img, classification_report, accuracies
 
 
 @st.experimental_memo
