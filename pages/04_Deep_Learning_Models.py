@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 from data_access.data_access import get_image
+from data_access.data_urls import urls_by_cell_type
 from data_access.data_paths import get_figure_path
 from data_viz.dl_plot import CLASSES, plot_mismatch_distribution, plot_pred_compare_with_truth, plot_predictions, predict_image
 from session.state import increment_counter, init_session_states
@@ -38,30 +39,6 @@ COMMENTS = {
     l’accuracy d’entraînement montant jusqu’aux alentours de 99% tandis que celle de 
     validation plafonne autour de 96% à partir de la 25ème epoch environ."""
 }
-
-urls_by_cell_type = {'basophil': [
-    "https://imagebank.hematology.org/getimagebyid/60504?size=3",
-    "https://imagebank.hematology.org/getimagebyid/60505?size=3",
-    "http://medcell.org/histology/blood_bone_marrow_lab/images/basophil.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Basophile-9.JPG/375px-Basophile-9.JPG",
-],
-    "eosinophil": [
-        "http://imagebank.hematology.org/getimagebyid/60934?size=3",
-        "http://imagebank.hematology.org/getimagebyid/60933?size=2",
-        "http://www.hkimls.org/eos1.jpg",
-        "http://www.hkimls.org/eos2.jpg"
-],
-    'erythroblast': [
-        "https://www.cellavision.com/images/Hematopoiesis/Erythropoiesis/PolychromaticErythroblast/POLYCHROMATICERYTHROBLAST1.jpg",
-        "https://www.cellavision.com/images/Hematopoiesis/Erythropoiesis/OrthochromaticErythroblast/ORTHROCHROMATICERYTHROBLAST1.jpg",
-],
-    'ig': ["A compléter"],
-    'lymphocyte': ["A compléter"],
-    'monocyte': ["A compléter"],
-    'neutrophil': [
-        "http://imagebank.hematology.org/getimagebyid/61935?size=2"
-],
-    'platelet': ["A compléter"]}
 
 
 def get_section(model_name, img_size=256):
