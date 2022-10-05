@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from data_viz.plot import reload_content
 from crop.crop import Crop
 import numpy as np
+from session.state import init_session_states, increment_counter
 
 
 def section_1():
@@ -48,27 +49,33 @@ def section_2():
 
     model = load_ml_model('data/ml_models/svc_'+str(size)+'.joblib')
 
-    def predict_image():
+    pred_counter_key = f'prediction_counter_1'
+
+    init_session_states(pred_counter_key)
+
+    @st.experimental_memo
+    def predict_image(counter):
         original_img, cell_type = get_random_image()
         img = original_img.convert('L').resize((size, size))
         img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
-        st.write("Type cellulaire prédit :", prediction[0])
+        pred_to_write = prediction[0]
         fig = plt.figure()
         plt.imshow(img, cmap='gray')
         plt.axis('off')
         plt.title(cell_type)
-        return fig
+        return fig, pred_to_write
 
-    fig = predict_image()
-    fig_placeholder = st.empty()
-    fig_placeholder.pyplot(fig)
+    pred_counter = st.session_state[pred_counter_key]
+    fig, pred_to_write = predict_image(pred_counter)
+    st.write("Type cellulaire prédit :", pred_to_write)
+    st.pyplot(fig)
 
     st.button(
         "Prédire une autre image",
         key=1,
-        on_click=reload_content,
-        args=(fig_placeholder.pyplot, predict_image))
+        on_click=increment_counter,
+        args=(pred_counter_key,))
 
     st.markdown("### Prédictions de vos images")
 
