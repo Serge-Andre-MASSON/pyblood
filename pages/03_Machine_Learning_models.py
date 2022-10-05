@@ -41,12 +41,14 @@ def section_1():
 def section_2():
     st.markdown("## Prédictions avec une Support Vector Machine")
 
+    pixels_selection = st.selectbox("Mécanisme de sélection des pixels :", ['Cropping', 'Select Percentile (10%)'], index=0)
+
     size = st.selectbox("Taille des images en entrée du modèle :", [
                         100, 70, 50, 30], index=1)
 
     st.markdown("### Prédictions sur la base de données d'entraînement")
 
-    model = load_ml_model('data/ml_models/svc_'+str(size)+'.joblib')
+    model = load_ml_model('data/ml_models/svc_'+pixels_selection[0]+str(size)+'.joblib')
 
     def predict_image():
         original_img, cell_type = get_random_image()
