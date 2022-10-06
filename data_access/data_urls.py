@@ -1,3 +1,8 @@
+from urllib.request import urlopen
+from PIL import Image
+import streamlit as st
+
+
 urls_by_cell_type = {'basophil': [
     "https://imagebank.hematology.org/getimagebyid/60504?size=3",
     "https://imagebank.hematology.org/getimagebyid/60505?size=3",
@@ -31,4 +36,12 @@ urls_by_cell_type = {'basophil': [
         "https://facmed.univ-rennes1.fr/resped/hemato/cc/CD/cd/ima/pnf/R7516.jpg"
 ],
     'platelet': ["http://bioimage.free.fr/hem_image/hem_img/plisole.jpg",
-    "http://bioimage.free.fr/hem_image/hem_img/nbplaug1.jpg"]}
+    "http://bioimage.free.fr/hem_image/hem_img/nbplaug1.jpg"
+]}
+
+@st.cache
+def get_image_by_url(url):
+    with Image.open(urlopen(url)) as img:
+        img = img.copy()
+    return img
+
