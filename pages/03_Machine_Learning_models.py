@@ -16,8 +16,8 @@ def section_1():
              Afin d'améliorer les performances et réduire le temps de calcul,
              diverses étapes de pre-processing ont été appliquées aux images.
              D'abord de l'oversampling pour homognénéiser les effectifs des classes,
-             suivi de la réduction de dimensionalité à l'aide du rognage automatique présenté précédemment,
-             et enfin une PCA.
+             suivi d'une sélection de features à l'aide du rognage automatique ou de SelectPercentile, présentés précédemment,
+             et enfin une réduction de dimensionalité à l'aide de la PCA.
              Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
              et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage est beaucoup plus faible.
              Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
@@ -43,12 +43,14 @@ def section_2():
     st.markdown("## Prédictions avec une Support Vector Machine")
 
     pixels_selection = st.selectbox("Mécanisme de sélection des pixels :", ['Cropping', 'Select Percentile (10%)'], index=0)
-
-    size = st.selectbox("Taille des images en entrée du modèle :", [
-                        100, 70, 50, 30], index=1)
+    
+    if pixels_selection == 'Select Percentile (10%)':
+        size = st.selectbox("Taille des images en entrée du modèle :", [200, 100, 70, 50, 30], index=2)
+    else:
+        size = st.selectbox("Taille des images en entrée du modèle :", [100, 70, 50, 30], index=1)
 
     st.markdown("### Prédictions sur la base de données d'entraînement")
-
+    st.write('data/ml_models/svc_'+pixels_selection[0]+str(size)+'.joblib')
     model = load_ml_model('data/ml_models/svc_'+pixels_selection[0]+str(size)+'.joblib')
 
     pred_counter_key1 = f'prediction_counter_1'
