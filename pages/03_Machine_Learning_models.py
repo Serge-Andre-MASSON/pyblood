@@ -10,7 +10,7 @@ from data_viz.ml_plot import plot_mismatch_distribution, plot_pred_compare_with_
 
 
 def section_1():
-    st.markdown("## Présentation de la démarche")
+    st.markdown("# Présentation de la démarche")
     st.write("""Divers modèles de classification classiques ont été appliqués à ce problème pour évaluer leurs performances.
              On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.
              Afin d'améliorer les performances et réduire le temps de calcul,
@@ -19,7 +19,7 @@ def section_1():
              suivi d'une sélection de features à l'aide du rognage automatique ou de SelectPercentile, présentés précédemment,
              et enfin une réduction de dimensionalité à l'aide de la PCA.
              Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
-             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage est beaucoup plus faible.
+             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage sont beaucoup plus faibles.
              Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
              les performances des divers modèles appliqués à chaque taille d'image (30 x 30, 50 x 50, 70 x 70, 100 x 100, 200 x 200) sont comparées.
              Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC. 
@@ -40,7 +40,7 @@ def section_1():
 
 
 def section_2():
-    st.markdown("## Prédictions avec une Support Vector Machine")
+    st.markdown("# Prédictions avec une Support Vector Machine")
 
     pixels_selection = st.selectbox("Mécanisme de sélection des pixels :", ['Cropping', 'Select Percentile (10%)'], index=0)
     
@@ -49,9 +49,20 @@ def section_2():
     else:
         size = st.selectbox("Taille des images en entrée du modèle :", [100, 70, 50, 30], index=1)
 
-    st.markdown("### Prédictions sur la base de données d'entraînement")
-    st.write('data/ml_models/svc_'+pixels_selection[0]+str(size)+'.joblib')
-    model = load_ml_model('data/ml_models/svc_'+pixels_selection[0]+str(size)+'.joblib')
+    model_name = 'svc_'+pixels_selection[0]+str(size)
+
+    st.markdown("## Performances générales")
+    
+    # image_path = get_figure_path(
+    #     'rapport_classification'+model_name, extension='jpg')
+    # image = get_image(image_path)
+
+    # st.image(image)
+
+    st.markdown("## Prédictions sur la base de données d'entraînement")
+    
+    
+    model = load_ml_model('data/ml_models/'+model_name+'.joblib')
 
     pred_counter_key1 = f'prediction_counter_1'
 
@@ -81,6 +92,9 @@ def section_2():
         on_click=increment_counter,
         args=(pred_counter_key1,))
     
+    st.markdown("## Etude des erreurs faites par le modèle")
+    st.markdown("### Répartition")
+    
     fig, mismatch_df = plot_mismatch_distribution(model_name)
     st.write(f"Il y a en tout {len(mismatch_df)} images mal classées pour ce modèle.")
     st.pyplot(fig)
@@ -101,7 +115,7 @@ def section_2():
     fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size = size)
     st.pyplot(fig)
 
-    st.markdown("### Prédictions de vos images")
+    st.markdown("## Prédictions de vos images")
 
     user_file = st.file_uploader(label="Charger votre image")
 
