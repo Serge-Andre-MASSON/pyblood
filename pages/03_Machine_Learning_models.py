@@ -80,6 +80,7 @@ def section_2():
         key=1,
         on_click=increment_counter,
         args=(pred_counter_key1,))
+    
     fig, mismatch_df = plot_mismatch_distribution(model_name)
     st.write(f"Il y a en tout {len(mismatch_df)} images mal classées pour ce modèle.")
     st.pyplot(fig)
@@ -87,6 +88,7 @@ def section_2():
     st.markdown("### Visualisation")
     true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
     cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                           true_cell_type]
 
     pred_cell_type = st.selectbox("Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
 
