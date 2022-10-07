@@ -2,6 +2,8 @@ import streamlit as st
 from data_access.data_access import load_pickle
 from data_access.data_paths import get_pbc_dataset_infos_paths
 from data_viz.plot import all_cell_types, cell_types_distribution, reload_content
+from data_access.data_access import get_image
+from data_access.data_paths import get_figure_path
 
 
 st.sidebar.markdown("# Pyblood")
@@ -49,3 +51,23 @@ st.pyplot(fig)
 
 st.write("""La distribution des données étant déséquilibrée, on utilisera des algorithmes de reéchantillonnage 
 dans le but d'améliorer les prédictions.""")
+
+st.title('Identification de biais')
+st.subheader('Notions de bases en biologie')
+
+img1=get_image(get_figure_path("hematopoiese"))
+st.image(img1, width=800)
+
+st.write("""Différencier les types cellulaires de ce projet en 8 classes demande à comprendre quelques notions de base en biologie.
+En effet, la différenciation cellulaire est une science complexe et certains biais peuvent venir perturber nos modèles
+de prédiction.""")
+
+st.subheader("Cas concrets")
+
+img2=get_image(get_figure_path("differenciation1"))
+st.image(img2, width=800)
+img3=get_image(get_figure_path("differenciation2"))
+st.image(img3, width=800)
+
+st.write("""Ceci n'explique pas complètement les erreurs que nos modèles feront par la suite, cependant cela nous met
+en évidence la difficulté de ce projet et de la question scientifique qu'il faut résoudre à la fin.""")
