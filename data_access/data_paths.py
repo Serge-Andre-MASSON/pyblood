@@ -65,3 +65,7 @@ def get_dl_model_path(model_name):
 def get_dl_mismatch_path(model_name):
     path = DL_MODELS_ROOT / f"{model_name}_mismatch.PICKLE"
     return get_correct_path(path)
+
+def get_ml_mismatch_path(model_name):
+    path = ML_MODELS_ROOT / f"{model_name}_mismatch.PICKLE"
+    return get_correct_path(path)
