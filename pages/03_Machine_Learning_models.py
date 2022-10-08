@@ -3,27 +3,34 @@ from PIL import Image
 from data_access.data_paths import get_figure_path
 from data_access.data_access import get_image, get_random_image, load_ml_model
 import matplotlib.pyplot as plt
-from data_viz.plot import reload_content
 from crop.crop import Crop
 import numpy as np
 from session.state import init_session_states, increment_counter
+from data_viz.ml_plot import plot_mismatch_distribution, plot_pred_compare_with_truth, CLASSES
+from data_access.data_urls import urls_by_cell_type, get_image_by_url
+from streamlit_cropper import st_cropper
 
+# Présentation du contenu sur la sidebar
+st.sidebar.markdown("# Modèles de Machine Learning")
+st.sidebar.write("""On présente ici les résultats obtenus dans la tâche d'identification de type cellulaire à l'aide de modèles de Machine Learning classiques.""")
 
 def section_1():
-    st.markdown("## Présentation de la démarche")
+    st.markdown("# Présentation de la démarche")
     st.write("""Divers modèles de classification classiques ont été appliqués à ce problème pour évaluer leurs performances.
-             On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.
-             Afin d'améliorer les performances et réduire le temps de calcul,
+             On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.""")
+    
+    st.write("""Afin d'améliorer les performances et réduire le temps de calcul,
              diverses étapes de pre-processing ont été appliquées aux images.
              D'abord de l'oversampling pour homognénéiser les effectifs des classes,
-             suivi de la réduction de dimensionalité à l'aide du rognage automatique présenté précédemment,
-             et enfin une PCA.
-             Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
-             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage est beaucoup plus faible.
-             Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
+             suivi d'une sélection de features à l'aide du rognage automatique ou de SelectPercentile, présentés précédemment,
+             et enfin une réduction de dimensionalité à l'aide de la PCA.""")
+             
+    st.write("""Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
+             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage sont beaucoup plus faibles.""")
+             
+    st.write("""Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
              les performances des divers modèles appliqués à chaque taille d'image (30 x 30, 50 x 50, 70 x 70, 100 x 100, 200 x 200) sont comparées.
-             Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC. 
-             """)
+             Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC.""")
 
     image_path = get_figure_path(
         "data_images_performance_vs_size", extension='png')
@@ -40,18 +47,32 @@ def section_1():
 
 
 def section_2():
-    st.markdown("## Prédictions avec une Support Vector Machine")
+    st.markdown("# Prédictions avec une Support Vector Machine")
 
-    size = st.selectbox("Taille des images en entrée du modèle :", [
-                        100, 70, 50, 30], index=1)
+    pixels_selection = st.selectbox("Mécanisme de sélection des pixels :", ['Cropping', 'Select Percentile (10%)'], index=0)
+    
+    if pixels_selection == 'Select Percentile (10%)':
+        size = st.selectbox("Taille des images en entrée du modèle :", [200, 100, 70, 50, 30], index=2)
+    else:
+        size = st.selectbox("Taille des images en entrée du modèle :", [100, 70, 50, 30], index=1)
 
-    st.markdown("### Prédictions sur la base de données d'entraînement")
+    model_name = 'svc_'+pixels_selection[0]+str(size)
 
-    model = load_ml_model('data/ml_models/svc_'+str(size)+'.joblib')
+    st.markdown("## Performances générales sur la base d'apprentissage")
+    
+    # image_path = get_figure_path(
+    #     'rapport_classification'+model_name, extension='jpg')
+    # image = get_image(image_path)
 
-    pred_counter_key = f'prediction_counter_1'
+    # st.image(image)
 
-    init_session_states(pred_counter_key)
+    st.markdown("## Prédictions sur la base d'apprentissage")    
+
+    model = load_ml_model('data/ml_models/'+model_name+'.joblib')
+
+    pred_counter_key1 = f'prediction_counter_1'
+
+    init_session_states(pred_counter_key1)
 
     @st.experimental_memo
     def predict_image(counter):
@@ -66,7 +87,7 @@ def section_2():
         plt.title(cell_type)
         return fig, pred_to_write
 
-    pred_counter = st.session_state[pred_counter_key]
+    pred_counter = st.session_state[pred_counter_key1]
     fig, pred_to_write = predict_image(pred_counter)
     st.write("Type cellulaire prédit :", pred_to_write)
     st.pyplot(fig)
@@ -75,9 +96,53 @@ def section_2():
         "Prédire une autre image",
         key=1,
         on_click=increment_counter,
-        args=(pred_counter_key,))
+        args=(pred_counter_key1,))
+    
+    st.markdown("## Etude des erreurs faites par le modèle")
+    st.markdown("### Répartition")
+    
+    fig, mismatch_df = plot_mismatch_distribution(model_name)
+    st.write(f"Il y a en tout {len(mismatch_df)} images mal classées pour ce modèle.")
+    st.pyplot(fig)
+    
+    st.markdown("### Visualisation")
+    true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
+    cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                           true_cell_type]
 
-    st.markdown("### Prédictions de vos images")
+    pred_cell_type = st.selectbox("Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
+
+    pred_cell_type_mimatch_df = cell_type_mimatch_df[
+            cell_type_mimatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
+
+    l = len(pred_cell_type_mimatch_df)
+    st.write(f"Le type cellulaire {true_cell_type} est confondu {l} fois avec le type cellulaire {pred_cell_type}.")
+
+    fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size = size)
+    st.pyplot(fig)
+    
+    st.markdown("## Images externes au jeu de données d'entraînement")
+
+    cell_type = st.selectbox(
+        "Type cellulaire", CLASSES)
+    url = st.selectbox("Images", urls_by_cell_type[cell_type])
+
+    url_img = get_image_by_url(url)
+    
+    w, h = url_img.size
+    max_width = 800
+    
+    url_img = url_img.convert('L').resize((max_width, h * max_width // w))
+    
+    cropped_img = st_cropper(url_img, realtime_update=True, box_color='black', aspect_ratio=(1, 1))
+    
+    cropped_img = cropped_img.resize((size, size))
+    
+    img_data = np.array(cropped_img).reshape(1, size**2)
+    prediction = model.predict(img_data)
+    st.write("Type cellulaire prédit :", prediction[0])
+
+    st.markdown("## Prédictions de vos images")
 
     user_file = st.file_uploader(label="Charger votre image")
 
@@ -96,38 +161,98 @@ def section_2():
 
 def section_3():
 
-    st.markdown("## Prédictions avec une Random Forest")
+    st.markdown("# Prédictions avec une Random Forest")
 
     size = st.selectbox("Taille des images en entrée du modèle :", [
                         200, 100, 70, 50, 30], index=2)
 
-    st.markdown("### Prédictions sur la base de données d'entraînement")
+    st.markdown("## Performances générales sur la base d'apprentissage")
+    
+    # image_path = get_figure_path(
+    #     'rapport_classification'+model_name, extension='jpg')
+    # image = get_image(image_path)
 
-    model = load_ml_model('data/ml_models/rfc_'+str(size)+'.joblib')
+    # st.image(image)
+    
+    st.markdown("## Prédictions sur la base d'apprentissage")
+    
+    model_name = 'rfc_'+str(size)
+    
+    model = load_ml_model('data/ml_models/'+model_name+'.joblib')
 
-    def predict_image():
+    pred_counter_key2 = f'prediction_counter_2'
+
+    init_session_states(pred_counter_key2)
+
+    @st.experimental_memo
+    def predict_image(counter):
         original_img, cell_type = get_random_image()
         img = original_img.convert('L').resize((size, size))
         img_data = np.array(img).reshape(1, size**2)
         prediction = model.predict(img_data)
-        st.write("Type cellulaire prédit :", prediction[0])
+        pred_to_write = prediction[0]
         fig = plt.figure()
         plt.imshow(img, cmap='gray')
         plt.axis('off')
         plt.title(cell_type)
-        return fig
+        return fig, pred_to_write
 
-    fig = predict_image()
-    fig_placeholder = st.empty()
-    fig_placeholder.pyplot(fig)
+    pred_counter = st.session_state[pred_counter_key2]
+    fig, pred_to_write = predict_image(pred_counter)
+    st.write("Type cellulaire prédit :", pred_to_write)
+    st.pyplot(fig)
 
     st.button(
         "Prédire une autre image",
         key=1,
-        on_click=reload_content,
-        args=(fig_placeholder.pyplot, predict_image))
+        on_click=increment_counter,
+        args=(pred_counter_key2,))
 
-    st.markdown("### Prédictions de vos images")
+    st.markdown("## Etude des erreurs faites par le modèle")
+    st.markdown("### Répartition")
+    
+    fig, mismatch_df = plot_mismatch_distribution(model_name)
+    st.write(f"Il y a en tout {len(mismatch_df)} images mal classées pour ce modèle.")
+    st.pyplot(fig)
+    
+    st.markdown("### Visualisation")
+    true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
+    cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                           true_cell_type]
+
+    pred_cell_type = st.selectbox("Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
+
+    pred_cell_type_mimatch_df = cell_type_mimatch_df[
+            cell_type_mimatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
+
+    l = len(pred_cell_type_mimatch_df)
+    st.write(f"Le type cellulaire {true_cell_type} est confondu {l} fois avec le type cellulaire {pred_cell_type}.")
+
+    fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size = size)
+    st.pyplot(fig)
+    
+    st.markdown("## Images externes au jeu de données d'entraînement")
+
+    cell_type = st.selectbox(
+        "Type cellulaire", CLASSES)
+    url = st.selectbox("Images", urls_by_cell_type[cell_type])
+
+    url_img = get_image_by_url(url)
+    
+    w, h = url_img.size
+    max_width = 800
+    
+    url_img = url_img.convert('L').resize((max_width, h * max_width // w))
+    
+    cropped_img = st_cropper(url_img, realtime_update=True, box_color='black', aspect_ratio=(1, 1))
+    
+    cropped_img = cropped_img.resize((size, size))
+    
+    img_data = np.array(cropped_img).reshape(1, size**2)
+    prediction = model.predict(img_data)
+    st.write("Type cellulaire prédit :", prediction[0])
+
+    st.markdown("## Prédictions de vos images")
 
     user_file = st.file_uploader(label="Charger votre image")
 
@@ -151,6 +276,6 @@ page_names_to_funcs = {
 }
 
 selected_page = st.sidebar.selectbox(
-    "Select a page", page_names_to_funcs.keys())
+    "Section : ", page_names_to_funcs.keys())
 
 page_names_to_funcs[selected_page]()
