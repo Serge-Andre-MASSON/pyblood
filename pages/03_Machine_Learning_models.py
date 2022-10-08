@@ -10,21 +10,27 @@ from data_viz.ml_plot import plot_mismatch_distribution, plot_pred_compare_with_
 from data_access.data_urls import urls_by_cell_type, get_image_by_url
 from streamlit_cropper import st_cropper
 
+# Présentation du contenu sur la sidebar
+st.sidebar.markdown("# Modèles de Machine Learning")
+st.sidebar.write("""On présente ici les résultats obtenus dans la tâche d'identification de type cellulaire à l'aide de modèles de Machine Learning classiques.""")
+
 def section_1():
     st.markdown("# Présentation de la démarche")
     st.write("""Divers modèles de classification classiques ont été appliqués à ce problème pour évaluer leurs performances.
-             On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.
-             Afin d'améliorer les performances et réduire le temps de calcul,
+             On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.""")
+    
+    st.write("""Afin d'améliorer les performances et réduire le temps de calcul,
              diverses étapes de pre-processing ont été appliquées aux images.
              D'abord de l'oversampling pour homognénéiser les effectifs des classes,
              suivi d'une sélection de features à l'aide du rognage automatique ou de SelectPercentile, présentés précédemment,
-             et enfin une réduction de dimensionalité à l'aide de la PCA.
-             Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
-             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage sont beaucoup plus faibles.
-             Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
+             et enfin une réduction de dimensionalité à l'aide de la PCA.""")
+             
+    st.write("""Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
+             et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage sont beaucoup plus faibles.""")
+             
+    st.write("""Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
              les performances des divers modèles appliqués à chaque taille d'image (30 x 30, 50 x 50, 70 x 70, 100 x 100, 200 x 200) sont comparées.
-             Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC. 
-             """)
+             Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC.""")
 
     image_path = get_figure_path(
         "data_images_performance_vs_size", extension='png')
@@ -61,7 +67,7 @@ def section_2():
     # st.image(image)
 
     st.markdown("## Prédictions sur la base d'apprentissage")    
-    
+
     model = load_ml_model('data/ml_models/'+model_name+'.joblib')
 
     pred_counter_key1 = f'prediction_counter_1'
@@ -270,6 +276,6 @@ page_names_to_funcs = {
 }
 
 selected_page = st.sidebar.selectbox(
-    "Select a page", page_names_to_funcs.keys())
+    "Section : ", page_names_to_funcs.keys())
 
 page_names_to_funcs[selected_page]()

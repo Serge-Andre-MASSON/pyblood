@@ -22,7 +22,7 @@ et sur les images pour optimiser la quantité et la qualité des données.""")
 
 # Chaque section est contenue dans une fonction
 def resampling():
-    st.markdown("## Rééchantillonnage du jeux de données")
+    st.markdown("# Rééchantillonnage du jeux de données")
     st.write("""Le jeu de données utilisé pour l'entrainement des modèles de machine 
     learning est déséquilibré.""")
 
@@ -45,9 +45,9 @@ def image_reduction():
         color_and_bw_counter_key,
         multi_sized_images_counter_key)
 
-    st.markdown("## Réduction de la taille des données")
+    st.markdown("# Réduction de la taille des données")
 
-    st.markdown('### Images en niveaux de gris')
+    st.markdown('## Images en niveaux de gris')
     st.write("""Etant donnée l'homogénéité du jeux de données en termes de
     palette de couleurs présente dans chaque image, on a estimé que se
     contenter de la version noir et blanc des images ne devrait pas représenter
@@ -62,7 +62,7 @@ def image_reduction():
         on_click=increment_counter,
         args=(color_and_bw_counter_key,))
 
-    st.markdown('### Différentes tailles pour les images')
+    st.markdown('## Différentes tailles pour les images')
 
     st.write("""D'abord dans une volonté de pouvoir rapidement tester les algorithmes
     on a généré des jeux de données contenant les images en noir et blanc et en
@@ -89,9 +89,9 @@ def feature_selection():
     init_session_states(
         plot_sp_mask_counter_key,
         plot_bw_crop_counter_key)
-    st.markdown("## Selection de features")
+    st.markdown("# Selection de features")
 
-    st.markdown("### SelectPercentile")
+    st.markdown("## SelectPercentile")
     st.write("""Dans un premier temps on a utilisé l'algorithme SelectPercentile de la
     bibliothèque scikit-learn.""")
     st.write("""Ce dernier effectue un test ANOVA entre les pixels de l'image et leur label
@@ -112,7 +112,7 @@ def feature_selection():
         on_click=increment_counter,
         args=(plot_sp_mask_counter_key,))
 
-    st.markdown("""### Rognage automatique""")
+    st.markdown("""## Rognage automatique""")
     st.write("""On a mis au point un algorithme permettant dans la plupart des cas
     de repérer automatiquement la zone d'intérêt d'une image. L'idée de cet algorithme
     est de calculer l'écart type des valeurs des pixels selon les axes horizontaux
@@ -123,37 +123,37 @@ def feature_selection():
     fig = plot_bw_crop(size, plot_bw_crop_counter)
     st.pyplot(fig)
 
-    st.button("Recharger", on_click=increment_counter,
+    st.button("Charger une autre image", on_click=increment_counter,
               args=(plot_bw_crop_counter_key,))
 
 
 def dimension_reduction():
-    st.markdown("## Réduction de dimension")
+    st.markdown("# Réduction de dimension")
     st.write("On a réduit la dimension de notre jeu de données en utilisant l'algorithme principal Component Analysis (PCA).")
 
     size = st.selectbox("Taille des images :", [70, 50, 30], index=2)
-    st.markdown("### PCA sur données brutes")
+    st.markdown("## PCA sur données brutes")
     st.write("Le résultat sur les données brutes est le suivant:")
 
     pca_fig, ratio = plot_pca(size)
     pca_placeholder = st.empty()
     pca_placeholder.pyplot(pca_fig)
 
-    st.write(f"Pourcentage du jeu de données restant : {ratio}")
+    st.write(f"Pourcentage d'informations du jeu de données restant : {ratio}")
 
-    st.markdown("### PCA après SelectPercentile")
+    st.markdown("## PCA après SelectPercentile")
 
     sp_pca_fig, ratio = plot_pca(size, selector='sp')
     sp_pca_placeholder = st.empty()
     sp_pca_placeholder.pyplot(sp_pca_fig)
-    st.write(f"Pourcentage du jeu de données restant : {ratio}")
+    st.write(f"Pourcentage d'informations du jeu de données restant : {ratio}")
 
-    st.markdown("### PCA après Rognage automatique")
+    st.markdown("## PCA après Rognage automatique")
 
     crop_pca_fig, ratio = plot_pca(size, selector='crop')
     crop_pca_placeholder = st.empty()
     crop_pca_placeholder.pyplot(crop_pca_fig)
-    st.write(f"Pourcentage du jeu de données restant : {ratio}")
+    st.write(f"Pourcentage d'informations du jeu de données restant : {ratio}")
 
 
 ###########################################################################################
@@ -163,7 +163,7 @@ page_names_to_funcs = {
     "Rééchantillonage du jeux de données": resampling,
     "Réduction de la taille des images": image_reduction,
     "Selection de features": feature_selection,
-    "réduction de dimension": dimension_reduction
+    "Réduction de dimension": dimension_reduction
 }
 
 selected_page = st.sidebar.selectbox(
