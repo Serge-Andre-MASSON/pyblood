@@ -57,6 +57,7 @@ def download_data():
 
             try:
                 BUCKET.blob(blob_name).download_to_filename(blob_name)
+                print(f"Downloading :{blob_name}")
             except IsADirectoryError:
                 print(
                     f"This blob ({blob}) is a directory, go to the next one...")
