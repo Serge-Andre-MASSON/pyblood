@@ -42,9 +42,8 @@ COMMENTS = {
     de validation augmente de moins de 0.1% sur 10 epochs, avec également un mécanisme
     de réduction du taux d’apprentissage en cas de détection de plateau. Nous obtenons
     une accuracy de 96% avec un temps d’entraînement d’environ 30 minutes. Nous
-    constatons que le phénomène de divergence précédemment observé se reproduit,
-    mais plus tard, à partir de la 20ème epoch environ. De plus, il est moins prononcé,
-    l’accuracy d’entraînement montant jusqu’aux alentours de 99% tandis que celle de
+    constatons une divergence entre accuracy d'entraînement et de validation à partir de la 20ème epoch environ.
+    L’accuracy d’entraînement monte jusqu’aux alentours de 99% tandis que celle de
     validation plafonne autour de 96% à partir de la 25ème epoch environ."""
 }
 
@@ -124,7 +123,7 @@ def get_section(model_name, img_size=256):
             st.pyplot(fig_1_2)
             st.write(pred_eval)
 
-        st.button("reload", on_click=increment_counter,
+        st.button("Recharger", on_click=increment_counter,
                   args=(pred_counter_key,))
 
         st.markdown(
