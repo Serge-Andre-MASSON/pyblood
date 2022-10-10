@@ -22,7 +22,7 @@ def section_1():
              On peut citer, entre autres, KNN, DecisionTree, SVC ou encore RandomForest.""")
 
     st.write("""Afin d'améliorer les performances et réduire le temps de calcul,
-             diverses étapes de pre-processing ont été appliquées aux images.
+             diverses étapes de pre-processing ont été appliquées aux images converties en niveaux de gris.
              D'abord de l'oversampling pour homognénéiser les effectifs des classes,
              suivi d'une sélection de features à l'aide du rognage automatique ou de SelectPercentile, présentés précédemment,
              et enfin une réduction de dimensionalité à l'aide de la PCA.""")
