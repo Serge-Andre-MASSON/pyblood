@@ -1,6 +1,6 @@
 import streamlit as st
-from data_access.data_access import load_pickle
-from data_access.data_paths import get_pbc_dataset_infos_paths
+from data_access.data_access import get_image, load_pickle
+from data_access.data_paths import get_figure_path, get_pbc_dataset_infos_paths
 from data_viz.ml_img_preprocessing import (
     plot_bw_crop,
     plot_pca,
@@ -81,6 +81,12 @@ def image_reduction():
     st.write("""Lors des tests des différents algorithmes, on s'est rendu compte que
     réduire la taille de l'image avait un réel impact sur la qualité de la prédiction
     qu'au delà de 70x70.""")
+
+    image_path = get_figure_path(
+        "data_images_performance_vs_size", extension='png')
+    image = get_image(image_path)
+
+    st.image(image)
 
 
 def feature_selection():
