@@ -67,9 +67,11 @@ def section_2():
 
     # image_path = get_figure_path(
     #     'rapport_classification'+model_name, extension='jpg')
-    # image = get_image(image_path)
+    image_path = get_figure_path(
+        'rapport_classification_'+model_name, extension='png')
+    image = get_image(image_path)
 
-    # st.image(image)
+    st.image(image)
 
     st.markdown("## Prédictions sur la base d'apprentissage")
 
@@ -178,7 +180,7 @@ def section_3():
     st.markdown("## Performances générales sur la base d'apprentissage")
 
     # image_path = get_figure_path(
-    #     'rapport_classification'+model_name, extension='jpg')
+    #     'rapport_classification_'+model_name, extension='png')
     # image = get_image(image_path)
 
     # st.image(image)
