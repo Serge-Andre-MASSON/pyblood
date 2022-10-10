@@ -123,7 +123,7 @@ def section_2():
 
     correct_pred_counter = st.session_state[correct_pred_counter_key]
     fig = plot_correct_pred(
-        true_cell_type, cell_type_mismatch_df, correct_pred_counter)
+        true_cell_type, cell_type_mismatch_df, correct_pred_counter, size)
 
     st.pyplot(fig)
     st.button("Voir d'autres", on_click=increment_counter,
@@ -249,7 +249,7 @@ def section_3():
 
     correct_pred_counter = st.session_state[correct_pred_counter_key]
     fig = plot_correct_pred(
-        true_cell_type, cell_type_mismatch_df, correct_pred_counter)
+        true_cell_type, cell_type_mismatch_df, correct_pred_counter, size)
 
     st.pyplot(fig)
     st.button("Voir d'autres", on_click=increment_counter,

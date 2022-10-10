@@ -35,7 +35,7 @@ def plot_mismatch_distribution(model_name):
 
 
 @st.experimental_memo
-def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter):
+def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter, size):
     match_df = load_pickle(get_pbc_dataset_infos_paths('both'))
     cell_type_match_df = match_df[match_df['target'] == true_cell_type]
     count = 0
@@ -50,7 +50,7 @@ def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter):
 
     fig, ax = plt.subplots(1, 4)
     for i in range(4):
-        ax[i].imshow(correct_pred[i])
+        ax[i].imshow(correct_pred[i].convert('L').resize((size, size)))
         ax[i].set_axis_off()
     return fig
 
