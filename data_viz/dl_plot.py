@@ -1,5 +1,5 @@
 from data_access.data_access import get_image, get_random_image, load_dl_model, load_pickle
-from data_access.data_paths import get_dl_mismatch_path, get_dl_model_path, get_figure_path
+from data_access.data_paths import get_dl_mismatch_path, get_dl_model_path, get_figure_path, get_pbc_dataset_infos_paths
 import tensorflow as tf
 import streamlit as st
 import seaborn as sns
@@ -41,6 +41,28 @@ def plot_mismatch_distribution(model_name):
     ax.get_legend().set_title("Prédiction")
 
     return fig, mismatch_df
+
+
+@st.experimental_memo
+def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter):
+    match_df = load_pickle(get_pbc_dataset_infos_paths('both'))
+    cell_type_match_df = match_df[match_df['target'] == true_cell_type]
+    count = 0
+
+    correct_pred = []
+    while count < 4:
+        id_ = np.random.randint(0, len(cell_type_match_df))
+        path = cell_type_match_df['path'].iloc[id_]
+        if not path in cell_type_mismatch_df:
+            correct_pred.append(get_image(path))
+
+        count += 1
+
+    fig, ax = plt.subplots(1, 4)
+    for i in range(4):
+        ax[i].imshow(correct_pred[i])
+        ax[i].set_axis_off()
+    return fig
 
 
 @st.experimental_memo

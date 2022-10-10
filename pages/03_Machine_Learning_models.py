@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from crop.crop import Crop
 import numpy as np
 from session.state import init_session_states, increment_counter
-from data_viz.ml_plot import plot_mismatch_distribution, plot_pred_compare_with_truth, CLASSES
+from data_viz.ml_plot import plot_correct_pred, plot_mismatch_distribution, plot_pred_compare_with_truth, CLASSES
 from data_access.data_urls import urls_by_cell_type, get_image_by_url
 from streamlit_cropper import st_cropper
 
@@ -113,20 +113,20 @@ def section_2():
 
     st.markdown("### Visualisation")
     true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
-    cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
-                                       true_cell_type]
+    cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                        true_cell_type]
 
     pred_cell_type = st.selectbox(
-        "Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
+        "Type cellulaire prédit:", cell_type_mismatch_df.predicted_cell_type.unique())
 
-    pred_cell_type_mimatch_df = cell_type_mimatch_df[
-        cell_type_mimatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
+    pred_cell_type_mismatch_df = cell_type_mismatch_df[
+        cell_type_mismatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
 
-    l = len(pred_cell_type_mimatch_df)
+    l = len(pred_cell_type_mismatch_df)
     st.write(
         f"Le type cellulaire {true_cell_type} est confondu {l} fois avec le type cellulaire {pred_cell_type}.")
 
-    fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size=size)
+    fig = plot_pred_compare_with_truth(pred_cell_type_mismatch_df, size=size)
     st.pyplot(fig)
 
     st.markdown("## Images externes au jeu de données d'entraînement")
@@ -227,20 +227,32 @@ def section_3():
 
     st.markdown("### Visualisation")
     true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
-    cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
-                                       true_cell_type]
+    cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                        true_cell_type]
 
+    st.markdown(f"##### Exemple de {true_cell_type} correctement prédits.")
+
+    correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
+    init_session_states(correct_pred_counter_key)
+
+    correct_pred_counter = st.session_state[correct_pred_counter_key]
+    fig = plot_correct_pred(
+        true_cell_type, cell_type_mismatch_df, correct_pred_counter)
+
+    st.pyplot(fig)
+    st.button("Voir d'autres", on_click=increment_counter,
+              args=(correct_pred_counter_key,))
     pred_cell_type = st.selectbox(
-        "Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
+        "Type cellulaire prédit:", cell_type_mismatch_df.predicted_cell_type.unique())
 
-    pred_cell_type_mimatch_df = cell_type_mimatch_df[
-        cell_type_mimatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
+    pred_cell_type_mismatch_df = cell_type_mismatch_df[
+        cell_type_mismatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
 
-    l = len(pred_cell_type_mimatch_df)
+    l = len(pred_cell_type_mismatch_df)
     st.write(
         f"Le type cellulaire {true_cell_type} est confondu {l} fois avec le type cellulaire {pred_cell_type}.")
 
-    fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size=size)
+    fig = plot_pred_compare_with_truth(pred_cell_type_mismatch_df, size=size)
     st.pyplot(fig)
 
     st.markdown("## Images externes au jeu de données d'entraînement")
