@@ -177,6 +177,7 @@ def section_3():
 
     st.markdown("## Performances générales sur la base d'apprentissage")
 
+    model_name = 'rfc_'+str(size)
     image_path = get_figure_path(
         'rapport_classification_'+model_name, extension='png')
     image = get_image(image_path)
@@ -184,8 +185,6 @@ def section_3():
     st.image(image)
 
     st.markdown("## Prédictions sur la base d'apprentissage")
-
-    model_name = 'rfc_'+str(size)
 
     model = load_ml_model('data/ml_models/'+model_name+'.joblib')
 
