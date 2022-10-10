@@ -81,7 +81,7 @@ def get_section(model_name, img_size=256):
         cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
                                             true_cell_type]
 
-        st.markdown(f"##### Exemple de {true_cell_type} correctement prédits.")
+        st.markdown(f"##### Exemple de {true_cell_type}s correctement prédits.")
         correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
         init_session_states(correct_pred_counter_key)
 

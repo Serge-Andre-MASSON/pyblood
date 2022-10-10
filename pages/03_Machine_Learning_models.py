@@ -115,6 +115,19 @@ def section_2():
     true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
     cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
                                         true_cell_type]
+    
+    st.markdown(f"##### Exemple de {true_cell_type}s correctement prédits.")
+
+    correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
+    init_session_states(correct_pred_counter_key)
+
+    correct_pred_counter = st.session_state[correct_pred_counter_key]
+    fig = plot_correct_pred(
+        true_cell_type, cell_type_mismatch_df, correct_pred_counter)
+
+    st.pyplot(fig)
+    st.button("Voir d'autres", on_click=increment_counter,
+              args=(correct_pred_counter_key,))
 
     pred_cell_type = st.selectbox(
         "Type cellulaire prédit:", cell_type_mismatch_df.predicted_cell_type.unique())
@@ -229,7 +242,7 @@ def section_3():
     cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
                                         true_cell_type]
 
-    st.markdown(f"##### Exemple de {true_cell_type} correctement prédits.")
+    st.markdown(f"##### Exemple de {true_cell_type}s correctement prédits.")
 
     correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
     init_session_states(correct_pred_counter_key)
