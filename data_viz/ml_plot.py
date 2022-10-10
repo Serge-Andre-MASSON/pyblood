@@ -50,7 +50,7 @@ def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter, size):
 
     fig, ax = plt.subplots(1, 4)
     for i in range(4):
-        ax[i].imshow(correct_pred[i].convert('L').resize((size, size)))
+        ax[i].imshow(correct_pred[i].convert('L').resize((size, size)), cmap = 'gray')
         ax[i].set_axis_off()
     return fig
 
