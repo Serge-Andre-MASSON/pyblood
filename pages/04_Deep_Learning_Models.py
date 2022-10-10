@@ -79,18 +79,17 @@ def get_section(model_name, img_size=256):
         true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
         cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
                                             true_cell_type]
+        st.markdown(f"##### Exemple de {true_cell_type} correctement prédits.")
+        true_correct_pred_counter_key = f"{model_name}_true_correct_pred_counter_key"
+        init_session_states(true_correct_pred_counter_key)
 
-        st.markdown(f"##### Exemple de {true_cell_type}s correctement prédits.")
-        correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
-        init_session_states(correct_pred_counter_key)
-
-        correct_pred_counter = st.session_state[correct_pred_counter_key]
+        correct_pred_counter = st.session_state[true_correct_pred_counter_key]
         fig = plot_correct_pred(
             true_cell_type, cell_type_mismatch_df, correct_pred_counter)
 
         st.pyplot(fig)
-        st.button("Voir d'autres", on_click=increment_counter,
-                  args=(correct_pred_counter_key,))
+        st.button("Voir d'autres", key=1, on_click=increment_counter,
+                  args=(true_correct_pred_counter_key,))
 
         pred_cell_type = st.selectbox(
             "Type cellulaire prédit:", cell_type_mismatch_df.predicted_cell_type.unique())
@@ -104,6 +103,20 @@ def get_section(model_name, img_size=256):
 
         fig = plot_pred_compare_with_truth(pred_cell_type_mismatch_df)
         st.pyplot(fig)
+
+        st.markdown(
+            f"##### Exemple de {pred_cell_type} correctement prédits.")
+        pred_correct_pred_counter_key = f"{model_name}_pred_correct_pred_counter_key"
+
+        init_session_states(pred_correct_pred_counter_key)
+
+        pred_correct_pred_counter = st.session_state[pred_correct_pred_counter_key]
+        fig = plot_correct_pred(
+            pred_cell_type, pred_cell_type_mismatch_df, pred_correct_pred_counter)
+
+        st.pyplot(fig)
+        st.button("Voir d'autres", key=2, on_click=increment_counter,
+                  args=(pred_correct_pred_counter_key,))
 
         st.markdown("## Inférence sur images du jeu de données original")
         pred_counter_key = f'{model_name}_prediction_counter'

@@ -30,23 +30,6 @@ def section_1():
     st.write("""Il s'avère que SVC et RandomForest sont les deux seuls modèles obtenant des performances satisfaisantes,
              et dans le cas de RandomForest aucun pre-processing n'est nécessaire, et les temps d'apprentissage sont beaucoup plus faibles.""")
 
-    st.write("""Afin d'évaluer l'influence de la taille des images sur les performances du modèle,
-             les performances des divers modèles appliqués à chaque taille d'image (30 x 30, 50 x 50, 70 x 70, 100 x 100, 200 x 200) sont comparées.
-             Le graphe ci-dessous présente les résultats obtenu pour le modèle SVC.""")
-
-    image_path = get_figure_path(
-        "data_images_performance_vs_size", extension='png')
-    image = get_image(image_path)
-
-    st.image(image)
-
-    st.write("""On peut constater que les performances croissent avec le taille des images juqu'à 70 x 70,
-             mais semblent ensuite osciller autour d'une valeur maximale.
-             Cette taille constitue donc un bon compromis pour ces modèles,
-             mais il est offert dans les sections suivantes de tester SVC et RandomForest, dont les hyperparamètres ont été optimisés,
-             sur des images de toutes les tailles précédemment présentées.
-             """)
-
 
 def section_2():
     st.markdown("# Prédictions avec une Support Vector Machine")
@@ -115,7 +98,7 @@ def section_2():
     true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
     cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
                                         true_cell_type]
-    
+
     st.markdown(f"##### Exemple de {true_cell_type}s correctement prédits.")
 
     correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
