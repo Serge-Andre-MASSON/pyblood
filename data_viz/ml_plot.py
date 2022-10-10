@@ -2,12 +2,14 @@
 import streamlit as st
 import seaborn as sns
 import numpy as np
+from PIL import Image
 import matplotlib.pyplot as plt
-from data_access.data_paths import get_ml_mismatch_path
+from data_access.data_paths import get_ml_mismatch_path, get_pbc_dataset_infos_paths
 from data_access.data_access import load_pickle, get_image
 
 CLASSES = ['basophil', 'eosinophil', 'erythroblast', 'ig',
            'lymphocyte', 'monocyte', 'neutrophil', 'platelet']
+
 
 @st.experimental_memo
 def plot_mismatch_distribution(model_name):
@@ -30,6 +32,28 @@ def plot_mismatch_distribution(model_name):
     ax.get_legend().set_title("Prédiction")
 
     return fig, mismatch_df
+
+
+@st.experimental_memo
+def plot_correct_pred(true_cell_type, cell_type_mismatch_df, counter):
+    match_df = load_pickle(get_pbc_dataset_infos_paths('both'))
+    cell_type_match_df = match_df[match_df['target'] == true_cell_type]
+    count = 0
+
+    correct_pred = []
+    while count < 4:
+        id_ = np.random.randint(0, len(cell_type_match_df))
+        path = cell_type_match_df['path'].iloc[id_]
+        if not path in cell_type_mismatch_df:
+            correct_pred.append(get_image(path))
+        count += 1
+
+    fig, ax = plt.subplots(1, 4)
+    for i in range(4):
+        ax[i].imshow(correct_pred[i])
+        ax[i].set_axis_off()
+    return fig
+
 
 @st.experimental_memo
 def plot_pred_compare_with_truth(pred_cell_type_mimatch_df, size, cell_by_row=4):

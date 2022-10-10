@@ -1,5 +1,10 @@
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
 from streamlit_cropper import st_cropper
 import streamlit as st
+from data_access.data_access import load_pickle
+from data_access.data_paths import get_pbc_dataset_infos_paths
 
 from session.state import increment_counter, init_session_states
 from data_access.data_urls import urls_by_cell_type, get_image_by_url
@@ -7,6 +12,7 @@ from data_access.data_urls import urls_by_cell_type, get_image_by_url
 from data_viz.dl_plot import (
     CLASSES,
     get_model_summary,
+    plot_correct_pred,
     plot_mismatch_distribution,
     plot_pred_compare_with_truth,
     plot_prediction_for_a_dataset_random_image,
@@ -18,27 +24,27 @@ st.sidebar.write("""Dans cette partie, nous présentons les caractéristiques de
 Les résultats présentés sont ceux des transfer learning effectués à partir de chacun des modèles choisis. """)
 
 COMMENTS = {
-    "inceptionv3": """L’entraînement du modèle est effectué sur seulement 10 epochs 
-        et nous obtenons une accuracy de 92% contre 90% sans fine-tuning avec un 
-        temps d’entraînement d’environ 10 minutes. En revanche, nous remarquons 
+    "inceptionv3": """L’entraînement du modèle est effectué sur seulement 10 epochs
+        et nous obtenons une accuracy de 92% contre 90% sans fine-tuning avec un
+        temps d’entraînement d’environ 10 minutes. En revanche, nous remarquons
         un overfitting assez important avec ce modèle.""",
 
-    "vgg16": """L’entraînement du modèle est effectué sur seulement 10 epochs mais 
-    se stoppe à 6 epochs car l’accuracy n’évolue plus et nous obtenons une accuracy 
-    de 95% contre 94% sans fine-tuning avec un temps d’entraînement d’environ 10 
+    "vgg16": """L’entraînement du modèle est effectué sur seulement 10 epochs mais
+    se stoppe à 6 epochs car l’accuracy n’évolue plus et nous obtenons une accuracy
+    de 95% contre 94% sans fine-tuning avec un temps d’entraînement d’environ 10
     minutes. En revanche, nous remarquons un léger overfitting avec ce modèle""",
 
-    "dense_net": """L’entraînement du modèle est effectué sur seulement 25 epochs et 
-    nous obtenons une accuracy de 98% contre 95% sans fine-tuning avec un temps 
+    "dense_net": """L’entraînement du modèle est effectué sur seulement 25 epochs et
+    nous obtenons une accuracy de 98% contre 95% sans fine-tuning avec un temps
     d’entraînement d’environ 50 minutes.""",
 
-    "basic_model": """L’entraînement du modèle est effectué jusqu’à ce que l’accuracy 
-    de validation augmente de moins de 0.1% sur 10 epochs, avec également un mécanisme 
-    de réduction du taux d’apprentissage en cas de détection de plateau. Nous obtenons 
-    une accuracy de 96% avec un temps d’entraînement d’environ 30 minutes. Nous 
-    constatons que le phénomène de divergence précédemment observé se reproduit, 
-    mais plus tard, à partir de la 20ème epoch environ. De plus, il est moins prononcé, 
-    l’accuracy d’entraînement montant jusqu’aux alentours de 99% tandis que celle de 
+    "basic_model": """L’entraînement du modèle est effectué jusqu’à ce que l’accuracy
+    de validation augmente de moins de 0.1% sur 10 epochs, avec également un mécanisme
+    de réduction du taux d’apprentissage en cas de détection de plateau. Nous obtenons
+    une accuracy de 96% avec un temps d’entraînement d’environ 30 minutes. Nous
+    constatons que le phénomène de divergence précédemment observé se reproduit,
+    mais plus tard, à partir de la 20ème epoch environ. De plus, il est moins prononcé,
+    l’accuracy d’entraînement montant jusqu’aux alentours de 99% tandis que celle de
     validation plafonne autour de 96% à partir de la 25ème epoch environ."""
 }
 
@@ -72,20 +78,32 @@ def get_section(model_name, img_size=256):
 
         st.markdown("### Visualisation")
         true_cell_type = st.selectbox("Type cellulaire réel:", CLASSES)
-        cell_type_mimatch_df = mismatch_df[mismatch_df.true_cell_type ==
-                                           true_cell_type]
+        cell_type_mismatch_df = mismatch_df[mismatch_df.true_cell_type ==
+                                            true_cell_type]
+
+        st.markdown(f"##### Exemple de {true_cell_type} correctement prédits.")
+        correct_pred_counter_key = f"{model_name}_correct_pred_counter_key"
+        init_session_states(correct_pred_counter_key)
+
+        correct_pred_counter = st.session_state[correct_pred_counter_key]
+        fig = plot_correct_pred(
+            true_cell_type, cell_type_mismatch_df, correct_pred_counter)
+
+        st.pyplot(fig)
+        st.button("Voir d'autres", on_click=increment_counter,
+                  args=(correct_pred_counter_key,))
 
         pred_cell_type = st.selectbox(
-            "Type cellulaire prédit:", cell_type_mimatch_df.predicted_cell_type.unique())
+            "Type cellulaire prédit:", cell_type_mismatch_df.predicted_cell_type.unique())
 
-        pred_cell_type_mimatch_df = cell_type_mimatch_df[
-            cell_type_mimatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
+        pred_cell_type_mismatch_df = cell_type_mismatch_df[
+            cell_type_mismatch_df.predicted_cell_type == pred_cell_type].reset_index(drop=True)
 
-        l = len(pred_cell_type_mimatch_df)
+        l = len(pred_cell_type_mismatch_df)
         st.write(
             f"Le type cellulaire {true_cell_type} est confondu {l} fois avec le type cellulaire {pred_cell_type}.")
 
-        fig = plot_pred_compare_with_truth(pred_cell_type_mimatch_df)
+        fig = plot_pred_compare_with_truth(pred_cell_type_mismatch_df)
         st.pyplot(fig)
 
         st.markdown("## Inférence sur images du jeu de données original")
