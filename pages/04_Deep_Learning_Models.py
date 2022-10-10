@@ -139,8 +139,8 @@ def get_section(model_name, img_size=256):
 
 
 page_names_to_funcs = {
-    "DenseNet121": get_section("dense_net"),
     "Basic Model": get_section("basic_model", img_size=64),
+    "DenseNet121": get_section("dense_net"),
     "VGG16": get_section("vgg16"),
     "InceptionV3": get_section("inceptionv3"),
 }

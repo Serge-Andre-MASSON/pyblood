@@ -29,7 +29,6 @@ targets_path = get_pbc_dataset_infos_paths('targets')
 targets = load_pickle(targets_path)
 
 placeholder = st.empty()
-# TODO : Re factor all_cell_types. app.py may not ask for data access.
 placeholder.pyplot(all_cell_types(targets))
 
 
@@ -39,23 +38,13 @@ st.button("Charger d'autres images",
 st.write("""On note que dans la plupart des cas, l'information essentielle 
 se situe au centre de l'image. On proposera deux façons de tirer parti de ce constat : """)
 
-st.markdown("""- Un algorithme de selection des pixels se basant sur 
-l'impact de ces dernier dans la variance du type cellulaire""")
+st.markdown("""- Un algorithme de selection des pixels se basant sur l'impact de ces dernier dans la variance du type cellulaire""")
 st.markdown("- Un algorithme de rognage automatique de l'image")
-st.subheader("Distribution des données")
-st.write("""La distribution des types cellulaires au sein du jeu de données se résume ainsi :""")
-
-
-fig = cell_types_distribution(targets)
-st.pyplot(fig)
-
-st.write("""La distribution des données étant déséquilibrée, on utilisera des algorithmes de reéchantillonnage 
-dans le but d'améliorer les prédictions.""")
 
 st.title('Identification de biais')
 st.subheader('Notions de bases en biologie')
 
-img1=get_image(get_figure_path("hematopoiese"))
+img1 = get_image(get_figure_path("hematopoiese"))
 st.image(img1, width=800)
 
 st.write("""Différencier les types cellulaires de ce projet en 8 classes demande à comprendre quelques notions de base en biologie.
@@ -64,10 +53,10 @@ de prédiction.""")
 
 st.subheader("Cas concrets")
 
-img2=get_image(get_figure_path("differenciation1"))
+img2 = get_image(get_figure_path("differenciation1"))
 st.image(img2, width=800)
-img3=get_image(get_figure_path("differenciation2"))
+img3 = get_image(get_figure_path("differenciation2"))
 st.image(img3, width=800)
 
-st.write("""Ceci n'explique pas complètement les erreurs que nos modèles feront par la suite, cependant cela nous met
-en évidence la difficulté de ce projet et de la question scientifique qu'il faut résoudre à la fin.""")
+st.write("""Ceci n'explique pas complètement les erreurs que nos modèles feront par la suite, cependant cela met
+en évidence la difficulté de ce projet et la question scientifique qu'il faut résoudre à la fin.""")
