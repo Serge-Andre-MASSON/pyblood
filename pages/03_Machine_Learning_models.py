@@ -65,8 +65,6 @@ def section_2():
 
     st.markdown("## Performances générales sur la base d'apprentissage")
 
-    # image_path = get_figure_path(
-    #     'rapport_classification'+model_name, extension='jpg')
     image_path = get_figure_path(
         'rapport_classification_'+model_name, extension='png')
     image = get_image(image_path)
