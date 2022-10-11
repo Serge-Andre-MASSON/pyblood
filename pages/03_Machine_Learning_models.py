@@ -126,14 +126,14 @@ def section_2():
     st.pyplot(fig)
     
     st.markdown(
-            f"##### Exemple de {pred_cell_type} correctement prédits.")
+            f"##### Exemple de {pred_cell_type}s correctement prédits.")
     pred_correct_pred_counter_key = f"{model_name}_pred_correct_pred_counter_key"
 
     init_session_states(pred_correct_pred_counter_key)
 
     pred_correct_pred_counter = st.session_state[pred_correct_pred_counter_key]
     fig = plot_correct_pred(
-        pred_cell_type, pred_cell_type_mismatch_df, pred_correct_pred_counter)
+        pred_cell_type, pred_cell_type_mismatch_df, pred_correct_pred_counter, size)
 
     st.pyplot(fig)
     st.button("Voir d'autres", key=2, on_click=increment_counter,
@@ -265,14 +265,14 @@ def section_3():
     st.pyplot(fig)
     
     st.markdown(
-            f"##### Exemple de {pred_cell_type} correctement prédits.")
+            f"##### Exemple de {pred_cell_type}s correctement prédits.")
     pred_correct_pred_counter_key = f"{model_name}_pred_correct_pred_counter_key"
 
     init_session_states(pred_correct_pred_counter_key)
 
     pred_correct_pred_counter = st.session_state[pred_correct_pred_counter_key]
     fig = plot_correct_pred(
-        pred_cell_type, pred_cell_type_mismatch_df, pred_correct_pred_counter)
+        pred_cell_type, pred_cell_type_mismatch_df, pred_correct_pred_counter, size)
 
     st.pyplot(fig)
     st.button("Voir d'autres", key=2, on_click=increment_counter,
