@@ -35,8 +35,8 @@ urls_by_cell_type = {'basophil': [
         "https://svt.ac-versailles.fr/local/cache-vignettes/L200xH196/polynuc1-s-a7eb3-a3c11.jpg?1655381235",
         "https://facmed.univ-rennes1.fr/resped/hemato/cc/CD/cd/ima/pnf/R7516.jpg"
 ],
-    'platelet': ["http://bioimage.free.fr/hem_image/hem_img/plisole.jpg",
-    "http://bioimage.free.fr/hem_image/hem_img/nbplaug1.jpg"
+    'platelet': ["http://bioimage.free.fr/hem_image/hem_img/nbplaug1.jpg",
+                 "http://bioimage.free.fr/hem_image/hem_img/plisole.jpg"
 ]}
 
 @st.cache
