@@ -16,7 +16,7 @@ from session.state import (
 
 # Présentation du contenu sur la sidebar
 st.sidebar.markdown("# Prétraitement des images")
-st.sidebar.write("""On présente ici le travail fait sur le jeux de données initial
+st.sidebar.write("""On présente ici le travail fait sur le jeu de données initial
 et sur les images pour optimiser la quantité et la qualité des données.""")
 
 
@@ -33,7 +33,7 @@ def resampling():
     st.pyplot(fig, clear_figure=True)
 
     st.write("""Comme le montre la figure ci-dessous (pour le modèle random forest), il a été avantageux de procéder 
-    à un ré-échantillonnage du jeux de données.""")
+    à un ré-échantillonnage du jeu de données.""")
     fig = plot_accurracies_vs_size_according_to_sampling()
     st.pyplot(fig, clear_figure=True)
 
@@ -48,7 +48,7 @@ def image_reduction():
     st.markdown("# Réduction de la taille des données")
 
     st.markdown('## Images en niveaux de gris')
-    st.write("""Etant donnée l'homogénéité du jeux de données en termes de
+    st.write("""Etant donnée l'homogénéité du jeu de données en termes de
     palette de couleurs présente dans chaque image, on a estimé que se
     contenter de la version noir et blanc des images ne devrait pas représenter
     une grosse perte d'information.""")

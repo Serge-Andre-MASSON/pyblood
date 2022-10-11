@@ -38,7 +38,7 @@ st.button("Charger d'autres images",
 st.write("""On note que dans la plupart des cas, l'information essentielle 
 se situe au centre de l'image. On proposera deux façons de tirer parti de ce constat : """)
 
-st.markdown("""- Un algorithme de selection des pixels se basant sur l'impact de ces dernier dans la variance du type cellulaire""")
+st.markdown("""- Un algorithme de selection des pixels se basant sur l'impact de ces derniers dans la variance du type cellulaire""")
 st.markdown("- Un algorithme de rognage automatique de l'image")
 
 st.title('Identification de biais')
