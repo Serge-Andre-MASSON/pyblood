@@ -36,4 +36,4 @@ st.write("Nous pourrions faire de la segmentation afin de compter les cellules d
 
 st.subheader("Interprétabilité")
 st.write("Les modèles proposés font l’objet de zones d’ombres dans leur prise de décision (boîtes noires), qui rendent parfois difficile d’accès l’interprétabilité de ces modèles pour le corps médical. Il est donc nécessaire d'améliorer leur compréhension")
-st.write("Une première approche que nous avons abordé dans ce projet pour améliorer l'interprétabilité de notre est l'affichage des features sélectionnées par notre réseau de neurones.")
+st.write("Une première approche que nous avons abordé dans ce projet pour améliorer l'interprétabilité de notre modèle est l'affichage des features sélectionnées par notre réseau de neurones.")
