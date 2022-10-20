@@ -22,9 +22,10 @@ DATA_ACCESS = os.getenv("DATA_ACCESS")
 
 
 if DATA_ACCESS != 'local':
-    credentials = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"])
-    client = storage.Client(credentials=credentials)
+    # credentials = service_account.Credentials.from_service_account_info(
+    #     st.secrets["gcp_service_account"])
+    # client = storage.Client(credentials=credentials)
+    client = storage.Client()
 
     BUCKET_NAME = "pyblood_bucket"
     BUCKET = client.bucket(BUCKET_NAME)
