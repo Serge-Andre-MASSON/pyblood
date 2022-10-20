@@ -6,7 +6,6 @@ import pickle
 
 import h5py
 import streamlit as st
-from google.oauth2 import service_account
 from google.cloud import storage
 
 import os
@@ -22,9 +21,6 @@ DATA_ACCESS = os.getenv("DATA_ACCESS")
 
 
 if DATA_ACCESS != 'local':
-    # credentials = service_account.Credentials.from_service_account_info(
-    #     st.secrets["gcp_service_account"])
-    # client = storage.Client(credentials=credentials)
     client = storage.Client()
 
     BUCKET_NAME = "pyblood_bucket"
@@ -65,8 +61,6 @@ def load_pickle(path):
         with open(path, 'rb') as f:
             p = pickle.load(f)
     return p
-
-# TODO: Make this work
 
 
 @st.cache(allow_output_mutation=True)

@@ -1,7 +1,7 @@
 # Pyblood
 datascientest project
 
-app : https://serge-andre-masson-pyblood-introduction-oifdmh.streamlitapp.com/
+app : https://pyblood-ehue6plvtq-od.a.run.app
 
 # Usage
 
