@@ -7,6 +7,7 @@ import pickle
 import h5py
 import streamlit as st
 from google.cloud import storage
+import pandas as pd
 
 import os
 from dotenv import load_dotenv
@@ -59,7 +60,7 @@ def load_pickle(path):
         p = pickle.load(path)
     else:
         with open(path, 'rb') as f:
-            p = pickle.load(f)
+            p = pd.read_pickle(path)
     return p
 
 

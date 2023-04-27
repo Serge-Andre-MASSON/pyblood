@@ -1,6 +1,9 @@
 # Data
 data
 
+# Python env
+.pyblood
+
 # Notebooks
 *.ipynb
 
