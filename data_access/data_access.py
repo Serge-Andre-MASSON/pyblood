@@ -57,7 +57,7 @@ def load_pickle(path):
             BUCKET.blob(path)
                   .download_as_bytes())
 
-        p = pickle.load(path)
+        p = pd.read_pickle(path)
     else:
         with open(path, 'rb') as f:
             p = pd.read_pickle(path)
